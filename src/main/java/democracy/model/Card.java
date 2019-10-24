@@ -1,5 +1,6 @@
 package democracy.model;
 
-public class Card {
+public class Card 
+{
 
 }
