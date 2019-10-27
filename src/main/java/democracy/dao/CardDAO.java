@@ -112,8 +112,13 @@ public class CardDAO
 		}
 	}
 	
-	private Card generateCard(ResultSet resultSet)
+	private Card generateCard(ResultSet resultSet) throws Exception
 	{
-		return null;
+		int id = resultSet.getInt("CARDID");
+		int eventId = resultSet.getInt("EVENTID");
+		String recipientName = resultSet.getString("RECIPIENT_NAME");
+		int layoutId = resultSet.getInt("LAYOUTID");
+		
+		return new Card(id, eventId, recipientName, layoutId);
 	}
 }
