@@ -11,20 +11,19 @@ import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.google.gson.Gson;
 
+import democracy.http.CreateCardRequest;
 import democracy.http.PostRequest;
 import democracy.http.PostResponse;
+import democracy.http.RequestResponse;
 
-
-
-
-public class CreateCardHandler implements RequestStreamHandler {
+public class CreateCardHandler implements RequestStreamHandler 
+{
 	
 	LambdaLogger logger;
 	
-	
-
 	@Override
-	public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
+	public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException 
+	{
 		logger = context.getLogger();
 		
 		// set up response
@@ -36,46 +35,49 @@ public class CreateCardHandler implements RequestStreamHandler {
 		JSONObject responseJson = new JSONObject();
 		responseJson.put("headers", headerJson);
 		
-		PostResponse response = null;
+		RequestResponse response = null;
 		
 		// extract body from incoming HTTP POST request. If any error, then return 422 error
 		String body;
-		boolean processed = false;
-		try {
+		boolean inputProcessingFailed = false;
+		try 
+		{
 			BufferedReader reader = new BufferedReader(new InputStreamReader(input));
 			JSONParser parser = new JSONParser();
 			JSONObject event = (JSONObject) parser.parse(reader);
 			logger.log("event:" + event.toJSONString());
 			
 			body = (String)event.get("body");
-			if (body == null) {
+			if (body == null) 
+			{
 				body = event.toJSONString();  // this is only here to make testing easier
 			}
-		}catch (ParseException pe) {
+		}
+		catch (ParseException pe) 
+		{
 				logger.log(pe.toString());
-				response = new PostResponse("unable to process input", 422);  // unable to process input
+				response = new RequestResponse(442, "Unable to process input");  // unable to process input
 				responseJson.put("body", new Gson().toJson(response));
-				processed = true;
+				inputProcessingFailed = true;
 				body = null;
-			}
+		}
 		
-		if (!processed) {
-			PostRequest req = new Gson().fromJson(body, PostRequest.class);
+		if (!inputProcessingFailed) 
+		{
+			CreateCardRequest req = new Gson().fromJson(body, CreateCardRequest.class);
 			logger.log(req.toString());
 			
-			// Byte 64 String Encoded? or maybe just add it to the database
-					
+			// LOGIC OF LAMBDA FUNCTION		
+			
 		}
 		
 		//last thing we do 
 		responseJson.put("body", new Gson().toJson(response));  
-//		responseJson.put("statusCode", response.httpCode);
+		responseJson.put("statusCode", response.httpCode);
 		
 		logger.log(responseJson.toJSONString());
 		OutputStreamWriter writer = new OutputStreamWriter(output, "UTF-8");
 		writer.write(responseJson.toJSONString());  
 		writer.close();
-		
 	}
-
 }
