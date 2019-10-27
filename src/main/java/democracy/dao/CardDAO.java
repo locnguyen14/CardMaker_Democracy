@@ -29,7 +29,7 @@ public class CardDAO
 	{
 		try
 		{
-			PreparedStatement ps = conn.prepareStatement("INSERT INTO cards (EVENTTYPEID, RECIPIENT_NAME, LAYOUTID) VALUES (?,?,?);");
+			PreparedStatement ps = conn.prepareStatement("INSERT INTO CARDS (EVENTTYPEID, RECIPIENT_NAME, LAYOUTID) VALUES (?,?,?);");
 			ps.setInt(1, card.getEventId());
 			ps.setString(2, card.getRecipientName());
 			ps.setInt(3, card.getLayoutId());
@@ -47,7 +47,7 @@ public class CardDAO
 	{
 		try 
 		{
-			PreparedStatement ps = conn.prepareStatement("DELETE FROM cards WHERE CARDID = ?;");
+			PreparedStatement ps = conn.prepareStatement("DELETE FROM CARDS WHERE CARDID = ?;");
 			ps.setInt(1, card.getId());	
 			int numAffected = ps.executeUpdate();
 			ps.close();
@@ -65,7 +65,7 @@ public class CardDAO
 		try
 		{
 			Card card = null;
-			PreparedStatement ps = conn.prepareStatement("SELECT * FROM cards WHERE CARDID = ?;");
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM CARDS WHERE CARDID = ?;");
 			ps.setInt(1, cardId);
 			ResultSet resultSet = ps.executeQuery();
 			
@@ -92,7 +92,7 @@ public class CardDAO
 		try 
 		{
 			Statement statement = conn.createStatement();
-			String query = "SELECT * FROM cards";
+			String query = "SELECT * FROM CARDS";
 			ResultSet resultSet = statement.executeQuery(query);
 			
 			while (resultSet.next())
@@ -115,7 +115,7 @@ public class CardDAO
 	private Card generateCard(ResultSet resultSet) throws Exception
 	{
 		int id = resultSet.getInt("CARDID");
-		int eventId = resultSet.getInt("EVENTID");
+		int eventId = resultSet.getInt("EVENTTYPEID");
 		String recipientName = resultSet.getString("RECIPIENT_NAME");
 		int layoutId = resultSet.getInt("LAYOUTID");
 		
