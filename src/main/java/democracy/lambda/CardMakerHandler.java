@@ -1,4 +1,4 @@
-package com.amazonaws.lambda.demo;
+package democracy.lambda;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
