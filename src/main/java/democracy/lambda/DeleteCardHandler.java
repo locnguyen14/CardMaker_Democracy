@@ -1,6 +1,11 @@
 package democracy.lambda;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -12,18 +17,14 @@ import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.google.gson.Gson;
 
 import democracy.http.CreateCardRequest;
-import democracy.http.PostRequest;
-import democracy.http.PostResponse;
 import democracy.http.RequestResponse;
 
-public class CreateCardHandler implements RequestStreamHandler 
-{
+public class DeleteCardHandler implements RequestStreamHandler {
 	
 	LambdaLogger logger;
 	
 	@Override
-	public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException 
-	{
+	public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
 		logger = context.getLogger();
 		
 		// set up response
@@ -37,6 +38,7 @@ public class CreateCardHandler implements RequestStreamHandler
 		
 		RequestResponse response = null;
 		
+		
 		// extract body from incoming HTTP POST request. If any error, then return 422 error
 		String body;
 		boolean inputProcessingFailed = false;
@@ -46,7 +48,7 @@ public class CreateCardHandler implements RequestStreamHandler
 			JSONParser parser = new JSONParser();
 			JSONObject event = (JSONObject) parser.parse(reader);
 			logger.log("event:" + event.toJSONString());
-			
+
 			body = (String)event.get("body");
 			if (body == null) 
 			{
@@ -55,17 +57,16 @@ public class CreateCardHandler implements RequestStreamHandler
 		}
 		catch (ParseException pe) 
 		{
-				logger.log(pe.toString());
-				response = new RequestResponse(442, "Unable to process input");  // unable to process input
-				responseJson.put("body", new Gson().toJson(response));
-				inputProcessingFailed = true;
-				body = null;
+			logger.log(pe.toString());
+			response = new RequestResponse(442, "Unable to process input");  // unable to process input
+			responseJson.put("body", new Gson().toJson(response));
+			inputProcessingFailed = true;
+			body = null;
 		}
-		
+
 		if (!inputProcessingFailed) 
 		{
-			// Create a Delete card request for later 
-			CreateCardRequest req = new Gson().fromJson(body, CreateCardRequest.class);
+			DeleteCardRequest req = new Gson().fromJson(body, DeleteCardRequest.class);
 			logger.log(req.toString());
 			
 			// LOGIC OF LAMBDA FUNCTION		
@@ -81,4 +82,5 @@ public class CreateCardHandler implements RequestStreamHandler
 		writer.write(responseJson.toJSONString());  
 		writer.close();
 	}
+
 }
