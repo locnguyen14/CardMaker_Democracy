@@ -6,8 +6,8 @@ import java.sql.DriverManager;
 public class DatabaseUtil 
 {
 	public final static String rdsMySqlDatabaseUrl = "democracydb.cqohivx9j5sq.us-east-1.rds.amazonaws.com";
-	public final static String dbUsername = "calcAdmin";
-	public final static String dbPassword = "calc:pass";
+	public final static String dbUsername = "democracyadmin";
+	public final static String dbPassword = "democracypassword";
 		
 	public final static String jdbcTag = "jdbc:mysql://";
 	public final static String rdsMySqlDatabasePort = "3306";

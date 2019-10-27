@@ -21,6 +21,7 @@ public class EventDAO
 		catch (Exception e) 
 		{
 			conn = null;
+			System.out.println("Connection failed");
 		}
 	}
 	
