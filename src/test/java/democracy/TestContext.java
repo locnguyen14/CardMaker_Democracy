@@ -130,7 +130,7 @@ public class TestContext implements Context {
 
         @Override
         public void log(String message) {
-            System.err.println(message);
+            System.out.println(message);
         }
     }
 }

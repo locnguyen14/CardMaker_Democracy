@@ -27,7 +27,7 @@ public class ListCardsHandlerTest extends LambdaTest
 
         JsonNode outputNode = Jackson.fromJsonString(output.toString(), JsonNode.class);
         Assert.assertEquals("200", outputNode.get("statusCode").asText());
-	}
+    }
 	
 	@Test
 	public void testListCards()
