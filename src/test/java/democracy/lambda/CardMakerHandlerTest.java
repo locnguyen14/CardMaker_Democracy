@@ -1,4 +1,4 @@
-package com.amazonaws.lambda.demo;
+package democracy.lambda;
 
 import static org.mockito.Mockito.when;
 

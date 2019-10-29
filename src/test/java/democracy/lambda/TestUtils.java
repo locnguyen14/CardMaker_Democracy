@@ -1,4 +1,4 @@
-package com.amazonaws.lambda.demo;
+package democracy.lambda;
 
 import java.io.IOException;
 import java.io.InputStream;
