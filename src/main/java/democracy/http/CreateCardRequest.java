@@ -2,8 +2,8 @@ package democracy.http;
 
 public class CreateCardRequest 
 {
-	String recipientName;
-	int eventId;
+	public String recipientName;
+	public int eventId;
 	
 	public CreateCardRequest(String recipientName, int eventId)
 	{
