@@ -35,7 +35,7 @@ public class ListCardHandler implements RequestStreamHandler
 		responseJson.put("headers", headerJson);
 		
 		RequestResponse response = null;
-
+		
 		ChangeCardListResponse result;
 		try 
 		{
@@ -44,6 +44,7 @@ public class ListCardHandler implements RequestStreamHandler
 		}
 		catch (Exception e)
 		{
+			System.out.println("EXCEPTION HERE");
 			response = new RequestResponse(500, e.getMessage());
 		}
 		
