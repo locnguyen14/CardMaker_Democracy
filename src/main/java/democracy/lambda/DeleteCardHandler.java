@@ -16,8 +16,12 @@ import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.google.gson.Gson;
 
-import democracy.http.CreateCardRequest;
+import democracy.dao.CardDAO;
+import democracy.http.ChangeCardListResponse;
 import democracy.http.RequestResponse;
+import democracy.http.ResponseFieldGenerator;
+import democracy.model.Card;
+
 
 public class DeleteCardHandler implements RequestStreamHandler {
 	
@@ -38,39 +42,64 @@ public class DeleteCardHandler implements RequestStreamHandler {
 		
 		RequestResponse response = null;
 		
+		ChangeCardListResponse result;
 		
-		// extract body from incoming HTTP POST request. If any error, then return 422 error
-		String body;
+		// Incoming HTTP GET request, but has nothing in body. 
+		// Have to think of way to extract cardID from path
+		// Ideas: https://forums.aws.amazon.com/thread.jspa?messageID=643660
 		boolean inputProcessingFailed = false;
+		String path;
+		
 		try 
 		{
 			BufferedReader reader = new BufferedReader(new InputStreamReader(input));
 			JSONParser parser = new JSONParser();
 			JSONObject event = (JSONObject) parser.parse(reader);
 			logger.log("event:" + event.toJSONString());
-
-			body = (String)event.get("body");
-			if (body == null) 
+			
+			path = (String) event.get("body"); ///?? or "headers" or indeed just "cardId"
+			if (path == null) 
 			{
-				body = event.toJSONString();  // this is only here to make testing easier
-			}
+				path = event.toJSONString();  // this is only here to make testing easier
+			}	
 		}
-		catch (ParseException pe) 
+		catch(ParseException pe) 
 		{
 			logger.log(pe.toString());
-			response = new RequestResponse(442, "Unable to process input");  // unable to process input
+			response = new RequestResponse(422, "Bad Request");  // unable to process input
 			responseJson.put("body", new Gson().toJson(response));
 			inputProcessingFailed = true;
-			body = null;
+			path = null;
 		}
-
+		
+		// 
 		if (!inputProcessingFailed) 
 		{
-			DeleteCardRequest req = new Gson().fromJson(body, DeleteCardRequest.class);
-			logger.log(req.toString());
+			//Need extract cardID from our request. Hopefully, it's similar to line 80
+			//For now, just give it a 1
+			//int cardID = Integer.parseInt(path.cardId);
+			int cardID = 1;
 			
-			// LOGIC OF LAMBDA FUNCTION		
+			// LOGIC OF LAMBDA FUNCTION
+			CardDAO dao = new CardDAO();
+			Card card = new Card(cardID, 0,"", 0);
 			
+			try 
+			{
+				if(dao.deleteCard(card)) 
+				{
+					result = ResponseFieldGenerator.getChangeCardListResponse();
+					response = new RequestResponse(200, result);
+				} 
+				else 
+				{
+					response = new RequestResponse(422, "Unable to Delete Card");
+				}
+			} 
+			catch (Exception e)
+			{
+				response = new RequestResponse(403, e.getMessage());
+			}
 		}
 		
 		//last thing we do 
