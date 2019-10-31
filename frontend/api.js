@@ -16,20 +16,22 @@ function selectCard(event)
     
     console.log(event);
     
+    // Get list of event lists
     var cardList = document.getElementById("cardList").getElementsByTagName("ul");
-    
+ 
+    // For each event list, deselect all selected 
     for (var i = 0; i < cardList.length; i++)
     {
-    	
+    	var eventCardList = cardList[i].getElementsByTagName("li");
+    	var selectedCards = cardList[i].querySelectorAll('.selected');
+    	for (let elt of selectedCards)
+    	{
+    		elt.classList.remove('selected');
+    	}
     }
     
-    let selected = event.target.parentElement.querySelectorAll('.selected');
-    for(let elem of selected) 
-    {
-      elem.classList.remove('selected');
-    }
+   
     event.target.classList.add('selected');
-    console.log(event.target.innerHTML);
 }
 
 // prevent unneeded selection of list elements on clicks
