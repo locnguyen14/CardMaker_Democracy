@@ -20,6 +20,7 @@ public class ListCardHandler implements RequestStreamHandler
 {
 	LambdaLogger logger;
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException 
 	{
@@ -35,7 +36,7 @@ public class ListCardHandler implements RequestStreamHandler
 		responseJson.put("headers", headerJson);
 		
 		RequestResponse response = null;
-
+		
 		ChangeCardListResponse result;
 		try 
 		{
@@ -49,9 +50,8 @@ public class ListCardHandler implements RequestStreamHandler
 		
 		//last thing we do 
 		responseJson.put("body", new Gson().toJson(response));  
-		responseJson.put("statusCode", response.httpCode);
+		responseJson.put("statusCode", response.statusCode);
 		
-		logger.log(responseJson.toJSONString());
 		OutputStreamWriter writer = new OutputStreamWriter(output, "UTF-8");
 		writer.write(responseJson.toJSONString());  
 		writer.close();

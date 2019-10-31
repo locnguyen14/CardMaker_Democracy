@@ -113,7 +113,7 @@ public class DeleteCardHandler implements RequestStreamHandler {
 		//response = new RequestResponse(Integer.parseInt(path), "Fake error");
 		//last thing we do 
 		responseJson.put("body", new Gson().toJson(response));  
-		responseJson.put("statusCode", response.httpCode);
+		responseJson.put("statusCode", response.statusCode);
 		
 		logger.log(responseJson.toJSONString());
 		OutputStreamWriter writer = new OutputStreamWriter(output, "UTF-8");
