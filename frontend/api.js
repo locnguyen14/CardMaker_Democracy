@@ -4,6 +4,47 @@ var listCardsUrl	= baseUrl + "main/list/cards";   // GET
 var deleteCardUrl	= baseUrl + "main/delete";       // GET
 var createCardUrl 	= baseUrl + "main/create";		 // POST
 
+/*
+ *		CARD SELECTION CODE
+ */
+
+var selectedCardId = null;
+
+function selectCard(event) 
+{
+    if (event.target.tagName != "LI") return;
+    
+    console.log(event);
+    
+    var cardList = document.getElementById("cardList").getElementsByTagName("ul");
+    
+    for (var i = 0; i < cardList.length; i++)
+    {
+    	
+    }
+    
+    let selected = event.target.parentElement.querySelectorAll('.selected');
+    for(let elem of selected) 
+    {
+      elem.classList.remove('selected');
+    }
+    event.target.classList.add('selected');
+    console.log(event.target.innerHTML);
+}
+
+// prevent unneeded selection of list elements on clicks
+function doNothing() 
+{
+	return false;
+};
+
+/*
+ *		API CODE
+ */
+
+events = null;
+layouts = null;
+
 function refreshCardList()
 {
 	var xhr = new XMLHttpRequest();
@@ -35,6 +76,7 @@ function parseRequestResponse(xhrResponseText)
 {
 	var xhrResponse = JSON.parse(xhrResponseText);
 	var body = JSON.parse(xhrResponse["body"]);
+	console.log(body);
 	
 	var statusCode = body["statusCode"];
 	var errorMessage = "";
@@ -57,24 +99,40 @@ function updateCardList(lambdaResponse)
 {	
 	var cardList = document.getElementById("cardList");
 	
-	var responseCardList = lambdaResponse["cards"]
+	var responseCardList = lambdaResponse["cards"];
+	var responseEventList = lambdaResponse["events"];
+	var responseLayoutList = lambdaResponse["layouts"];
+	
+	events = responseEventList;
+	layouts = responseLayoutList;
 	
 	var output = "";
 	
+	for (var i = 0; i < responseEventList.length; i++)
+	{
+		var event= responseEventList[i];
+		var eventId = event.id;
+		var eventName = event.name;
+		
+		output += "<h3>" + eventName + "</h3><ul id=\"event-" + eventId + "\" onclick=selectCard(event) onmousedown=doNothing()></ul>";
+	}
+	
+	cardList.innerHTML = output;
+		
 	for (var i = 0; i < responseCardList.length; i++)
 	{
 		var card = responseCardList[i];
 		var cardId = card.id;
 		var eventId = card.eventId;
 		var recipient = card.recipientName;
-		var layoutId = card.layoutId;
-		console.log(card);
 		
-		output += "<div id=\"card" + cardId + "\"><b> CARD: " + cardId + 
-			", " + recipient + ": " + eventId + "</b><br></div>";
+		var eventList = document.getElementById("event-"+eventId);
+		
+		console.log(eventList);
+		var cardEntry = eventList.innerHTML;
+		cardEntry += "<li>ID: " + cardId + "\tRecipient: " + recipient + "</li>";
+		eventList.innerHTML = cardEntry;
 	}
-	
-	cardList.innerHTML = output;
 }
 
 function handleCreateCardClick()
