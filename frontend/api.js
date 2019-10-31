@@ -140,14 +140,13 @@ function handleCreateCardClick()
 
 }
 
-function handleDeleteCardClick(val)
+function handleDeleteCardClick()
 {
-	// put this here, work on later
-//	var data = {};
-//	data["name"] = val;
-//	
-//	var js = JSON.stringify(data);
-//	console.log("JS:" + js);
+	// Validate on selecting the card when hitting the delete card button
+	if (document)
+	
+	
+	
 	var xhr = new XMLHttpRequest();
 	xhr.open("GET", deleteCardUrl, true);
 	
