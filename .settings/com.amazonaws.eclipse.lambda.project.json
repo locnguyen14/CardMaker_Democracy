@@ -1,0 +1,1 @@
+{"lastDeploymentHandler":"democracy.lambda.DeleteCardHandler","lastInvokeHandler":null,"handlerMetadata":{"democracy.lambda.DeleteCardHandler":{"deployment":{"regionId":"us-east-1","awsLambdaFunctionName":"deleteCard","awsIamRoleName":"Developer","awsS3BucketName":"cs509-democracy","memory":0,"timeout":0},"invoke":null}},"lastInvokedHandlerDeployed":false}

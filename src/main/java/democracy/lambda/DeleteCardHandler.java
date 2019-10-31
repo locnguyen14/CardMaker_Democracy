@@ -49,6 +49,7 @@ public class DeleteCardHandler implements RequestStreamHandler {
 		// Ideas: https://forums.aws.amazon.com/thread.jspa?messageID=643660
 		boolean inputProcessingFailed = false;
 		String path;
+		int cardID=-1;
 		
 		try 
 		{
@@ -57,7 +58,10 @@ public class DeleteCardHandler implements RequestStreamHandler {
 			JSONObject event = (JSONObject) parser.parse(reader);
 			logger.log("event:" + event.toJSONString());
 			
-			path = (String) event.get("body"); ///?? or "headers" or indeed just "cardId"
+			path = (String) event.get("cardId"); ///for lambda testing purpose, keep it path (which is the id itself)
+			logger.log("Path=" + path);
+			cardID = Integer.parseInt(path);
+			
 			if (path == null) 
 			{
 				path = event.toJSONString();  // this is only here to make testing easier
@@ -71,14 +75,18 @@ public class DeleteCardHandler implements RequestStreamHandler {
 			inputProcessingFailed = true;
 			path = null;
 		}
-		
-		// 
+		catch(NumberFormatException ne) 
+		{
+			logger.log(ne.toString());
+			response = new RequestResponse(422, "Bad Request");  // unable to process input
+			responseJson.put("body", new Gson().toJson(response));
+			inputProcessingFailed = true;
+			path = null;
+		}
+		 
+		 
 		if (!inputProcessingFailed) 
 		{
-			//Need extract cardID from our request. Hopefully, it's similar to line 80
-			//For now, just give it a 1
-			//int cardID = Integer.parseInt(path.cardId);
-			int cardID = 1;
 			
 			// LOGIC OF LAMBDA FUNCTION
 			CardDAO dao = new CardDAO();
@@ -102,6 +110,7 @@ public class DeleteCardHandler implements RequestStreamHandler {
 			}
 		}
 		
+		//response = new RequestResponse(Integer.parseInt(path), "Fake error");
 		//last thing we do 
 		responseJson.put("body", new Gson().toJson(response));  
 		responseJson.put("statusCode", response.httpCode);
