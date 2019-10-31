@@ -12,6 +12,8 @@ import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.google.gson.Gson;
 
 import democracy.dao.CardDAO;
+import democracy.dao.EventDAO;
+import democracy.dao.LayoutDAO;
 import democracy.http.ChangeCardListResponse;
 import democracy.http.CreateCardRequest;
 import democracy.http.PostRequest;
@@ -19,20 +21,36 @@ import democracy.http.PostResponse;
 import democracy.http.RequestResponse;
 import democracy.http.ResponseFieldGenerator;
 import democracy.model.Card;
+import democracy.model.Event;
+import democracy.model.Layout;
 
 public class CreateCardHandler implements RequestStreamHandler 
 {
 	
 	LambdaLogger logger;
 	
-	boolean createCard(String recipient, int eventid) throws Exception {
+	boolean createCard(String recipient, int eventid, int layoutid) throws Exception {
 		if (logger != null) { logger.log("in createCard"); }
 		CardDAO dao = new CardDAO();
-		
-		// check if legal
-		if (recipient.length() > 0 && eventid >= 1 && eventid <= 17) {
-		Card card = new Card(1, eventid, recipient, 1);
-		return dao.addCard(card);
+		EventDAO edao = new EventDAO();
+		LayoutDAO ldao = new LayoutDAO();
+		boolean valideventid = false;
+		boolean validlayoutid = false;
+		for (Event e : edao.getAllEvents()) {
+			if (e.getId() == eventid) {
+				valideventid = true;
+				break;
+			}
+		}
+		for (Layout l: ldao.getAllLayouts()) {
+			if (l.getId() == layoutid) {
+				validlayoutid = true;
+				break;
+			}
+		}
+		if (valideventid && validlayoutid) {
+			Card card = new Card(1, eventid, recipient, layoutid);
+			return dao.addCard(card);
 		}
 		return false;
 	}
@@ -88,7 +106,9 @@ public class CreateCardHandler implements RequestStreamHandler
 			
 			// LOGIC OF LAMBDA FUNCTION	
 			try {
-				if(createCard(req.recipientName, req.eventId)) {
+				int eid = Integer.parseInt(req.eventId);
+				int lid = Integer.parseInt(req.layoutId);
+				if(createCard(req.recipientName, eid, lid)) {
 					result = ResponseFieldGenerator.getChangeCardListResponse();
 					response = new RequestResponse(200, result);
 				}
