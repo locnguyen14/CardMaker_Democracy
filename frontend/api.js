@@ -1,8 +1,8 @@
 var baseUrl = "https://yvmlvrpr1m.execute-api.us-east-1.amazonaws.com/alpha/"; 
 
 var listCardsUrl	= baseUrl + "main/list/cards";   // GET
-var deleteCardUrl	= baseUrl + "main/delete";
-var createCardUrl 	= baseUrl + "main/create";
+var deleteCardUrl	= baseUrl + "main/delete";       // GET
+var createCardUrl 	= baseUrl + "main/create";		 // POST
 
 function refreshCardList()
 {
@@ -82,7 +82,40 @@ function handleCreateCardClick()
 
 }
 
-function handleDeleteCardClick()
+function handleDeleteCardClick(val)
 {
+	// put this here, work on later
+//	var data = {};
+//	data["name"] = val;
+//	
+//	var js = JSON.stringify(data);
+//	console.log("JS:" + js);
+	var xhr = new XMLHttpRequest();
+	xhr.open("GET", deleteCardUrl, true);
+	
+	//Send the collected data as json. In this case nothing
+	xhr.send()
+	
+	xhr.onloadend = function()
+	{
+		console.log(xhr);
+		console.log(xhr.request);
+		if (xhr.readyState == XMLHttpRequest.DONE)
+		{
+			var RequestResponse = parseRequestResponse(xhr.responseText);
+			if (requestResponse[2] != null)
+			{
+				updateCardList(requestResponse[2]);
+			}
+			else
+			{
+				console.log(requestResponse[1]);
+			}
+		}
+		else
+		{
+			console.log("Error during xhr");
+		}
+	}
 	
 }
