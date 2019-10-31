@@ -50,7 +50,7 @@ public class ListCardHandler implements RequestStreamHandler
 		
 		//last thing we do 
 		responseJson.put("body", new Gson().toJson(response));  
-		responseJson.put("statusCode", response.httpCode);
+		responseJson.put("statusCode", response.statusCode);
 		
 		OutputStreamWriter writer = new OutputStreamWriter(output, "UTF-8");
 		writer.write(responseJson.toJSONString());  
