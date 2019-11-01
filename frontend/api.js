@@ -142,39 +142,48 @@ function handleCreateCardClick()
 
 }
 
+
+
 function handleDeleteCardClick()
 {
-	// Validate on selecting the card when hitting the delete card button
-	if (document)
+	var card = document.querySelector(".selected")
 	
-	
-	
-	var xhr = new XMLHttpRequest();
-	xhr.open("GET", deleteCardUrl, true);
-	
-	//Send the collected data as json. In this case nothing
-	xhr.send()
-	
-	xhr.onloadend = function()
+	// Prompot alert if nothing is selected. Too adventurous?
+	if (card == null)
 	{
-		console.log(xhr);
-		console.log(xhr.request);
-		if (xhr.readyState == XMLHttpRequest.DONE)
-		{
-			var RequestResponse = parseRequestResponse(xhr.responseText);
-			if (requestResponse[2] != null)
-			{
-				updateCardList(requestResponse[2]);
-			}
-			else
-			{
-				console.log(requestResponse[1]);
-			}
-		}
-		else
-		{
-			console.log("Error during xhr");
-		}
+		alert("Please select a card to delete")
 	}
-	
+	else
+	{
+		if (confirm("De you want to delete" + card.value))
+		{
+			var xhr = new XMLHttpRequest();
+			xhr.open("GET", deleteCardUrl, true);
+			
+			//Send the collected data as json. In this case nothing
+			xhr.send()
+			
+			xhr.onloadend = function()
+			{
+				console.log(xhr);
+				console.log(xhr.request);
+				if (xhr.readyState == XMLHttpRequest.DONE)
+				{
+					var RequestResponse = parseRequestResponse(xhr.responseText);
+					if (requestResponse[2] != null)
+					{
+						updateCardList(requestResponse[2]);
+					}
+					else
+					{
+						console.log(requestResponse[1]);
+					}
+				}
+				else
+				{
+					console.log("Error during xhr");
+				}
+			}
+		}
+	}	
 }
