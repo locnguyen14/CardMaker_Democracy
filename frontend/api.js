@@ -137,6 +137,8 @@ function updateCardList(lambdaResponse)
 	}
 }
 
+
+
 function handleCreateCardClick()
 {
 
