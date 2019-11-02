@@ -148,14 +148,14 @@ function handleDeleteCardClick()
 {
 	var card = document.querySelector(".selected")
 	
-	// Prompot alert if nothing is selected. Too adventurous?
+	// Prompt alert if nothing is selected. Too adventurous?
 	if (card == null)
 	{
 		alert("Please select a card to delete")
 	}
 	else
 	{
-		if (confirm("De you want to delete" + card.value))
+		if (confirm("Do you want to delete" + card.value))
 		{
 			var xhr = new XMLHttpRequest();
 			xhr.open("GET", deleteCardUrl, true);
