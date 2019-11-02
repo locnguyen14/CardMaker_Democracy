@@ -138,7 +138,7 @@ function updateCardList(lambdaResponse)
 		
 		console.log(eventList);
 		var cardEntry = eventList.innerHTML;
-		cardEntry += "<li>ID: " + cardId + "\tRecipient: " + recipient + "</li>";
+		cardEntry += "<li><b>ID:</b> " + cardId + "         <b>Recipient:</b> " + recipient + "</li>";
 		eventList.innerHTML = cardEntry;
 	}
 	
