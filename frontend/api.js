@@ -174,35 +174,35 @@ function handleDeleteCardClick(event)
 	}
 	else
 	{
-		if (confirm("Do you want to delete" + card.value))
-		{
-			var xhr = new XMLHttpRequest();
-			xhr.open("GET", deleteCardUrl, true);
-			
-			//Send the collected data as json. In this case nothing
-			xhr.send()
-			
-			xhr.onloadend = function()
-			{
-				console.log(xhr);
-				console.log(xhr.request);
-				if (xhr.readyState == XMLHttpRequest.DONE)
-				{
-					var RequestResponse = parseRequestResponse(xhr.responseText);
-					if (requestResponse[2] != null)
-					{
-						updateCardList(requestResponse[2]);
-					}
-					else
-					{
-						console.log(requestResponse[1]);
-					}
-				}
-				else
-				{
-					console.log("Error during xhr");
-				}
-			}
-		}
+		if (confirm("Do you want to delete" + cardID))
+//		{
+//			var xhr = new XMLHttpRequest();
+//			xhr.open("GET", deleteCardUrl, true);
+//			
+//			//Send the collected data as json. In this case nothing
+//			xhr.send()
+//			
+//			xhr.onloadend = function()
+//			{
+//				console.log(xhr);
+//				console.log(xhr.request);
+//				if (xhr.readyState == XMLHttpRequest.DONE)
+//				{
+//					var RequestResponse = parseRequestResponse(xhr.responseText);
+//					if (requestResponse[2] != null)
+//					{
+//						updateCardList(requestResponse[2]);
+//					}
+//					else
+//					{
+//						console.log(requestResponse[1]);
+//					}
+//				}
+//				else
+//				{
+//					console.log("Error during xhr");
+//				}
+//			}
+//		}
 	}	
 }
