@@ -165,12 +165,10 @@ function handleCreateCardClick(e)
 
 
 
-function handleDeleteCardClick()
+function handleDeleteCardClick(event)
 {
-	var card = document.querySelector(".selected")
-	
 	// Prompt alert if nothing is selected.
-	if (card == null)
+	if(event.target.tagName != "LI")
 	{
 		alert("Please select a card to delete")
 	}
