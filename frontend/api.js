@@ -167,14 +167,17 @@ function handleCreateCardClick(e)
 
 function handleDeleteCardClick(event)
 {
+	var selectedCard = document.querySelector(".selected");
 	// Prompt alert if nothing is selected.
-	if(event.target.tagName != "LI")
+	if(selectedCard == null);
 	{
-		alert("Please select a card to delete")
+		alert("Please select a card to delete");
 	}
 	else
 	{
-		if (confirm("Do you want to delete" + cardID))
+		var cardID = selectedCard.innerHTML.split(" ")[1];
+		console.log(cardID)
+		if (confirm("Do you want to delete" + cardID)) return;
 //		{
 //			var xhr = new XMLHttpRequest();
 //			xhr.open("GET", deleteCardUrl, true);
