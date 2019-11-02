@@ -137,7 +137,10 @@ function updateCardList(lambdaResponse)
 	}
 }
 
-
+function testreset(){
+	document.getElementById('id01').style.display='none';
+	document.getElementById("form01").reset();
+}
 
 function handleCreateCardClick()
 {
