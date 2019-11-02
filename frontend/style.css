@@ -1,3 +1,7 @@
+.selected {
+  background: #80b6ed;
+}
+
 /* Full-width input fields */
 input[type=text] {
     width: 100%;
