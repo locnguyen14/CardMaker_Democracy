@@ -153,7 +153,7 @@ function handleDeleteCardClick()
 {
 	var card = document.querySelector(".selected")
 	
-	// Prompt alert if nothing is selected. Too adventurous?
+	// Prompt alert if nothing is selected.
 	if (card == null)
 	{
 		alert("Please select a card to delete")
