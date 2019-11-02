@@ -10,7 +10,13 @@
 		function initialize() {
 			refreshCardList();
 		}
+		
+		function resetform01(){
+			document.getElementById('create').style.display='none';
+			document.getElementById("createForm").reset();
+ 		}
 		</script>
+
 	</head>
 	<body onload="initialize()">
 	
@@ -19,8 +25,50 @@
 	<h3>Online greeting cards by the people, for the people.</h3>
 	</div>
 	
-	<button onclick="">Create Card</button>
-	<button onclick="">Delete Card</button>
+	<button onclick="document.getElementById('create').style.display='block'" style = "width:auto;">Create Card</button>
+	<button onclick="" style = "width:auto">Delete Card</button>
+	<div id="create" class="modal">
+  	<form id = "createForm" class="modal-content animate" action="/action_page.php">
+   	<div class="container">
+      <label><b>Recipient Name</b></label>
+      <input type="text" placeholder="Enter Recipient Name" required>
+
+      <label><b>Event Type</b></label>
+      <br>
+      <select id = "event" class="eventtype">
+  		<option value ="1">Anniversary</option>
+  		<option value ="2">Back to School</option>
+  		<option value ="3">Baptism and Christen</option>
+  		<option value ="4">Baby</option>
+   		<option value ="5">Bar/Bat Mitzvah</option>
+  		<option value ="6">Birthday</option>
+  		<option value ="7">Confirmation</option>
+  		<option value ="8">Congratulations</option>
+   		<option value ="9">Encouragement</option>
+  		<option value ="10">First Communion</option>
+  		<option value ="11">Get Well</option>
+  		<option value ="12">Graduation</option>
+   		<option value ="13">Retirement</option>
+  		<option value ="14">Sympathy</option>
+  		<option value ="15">Teacher Appreciation</option>
+  		<option value ="16">Thank You</option>
+  		<option value ="17">Wedding</option>
+	  </select>
+	  <br>
+      <label><b>Layout</b></label>
+      <br>
+      <select id = "layout" class="layouttype">
+  		<option value ="1">Landscape</option>
+  		<option value ="2">Portrait</option>
+	  </select>
+	  <br>
+      <div class="clearfix">
+        <button type="button" onclick="resetform01()" class="cancelbtn">Cancel</button>
+        <button type="submit" class="signupbtn">Create</button>
+      </div>
+    </div>
+  </form>
+</div>
 	
 	<div id="cardList"></div>
 	
