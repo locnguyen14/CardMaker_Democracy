@@ -29,9 +29,9 @@ function selectCard(event)
     		elt.classList.remove('selected');
     	}
     }
-    
    
     event.target.classList.add('selected');
+    console.log(event.target.innerHTML);
 }
 
 // prevent unneeded selection of list elements on clicks
@@ -100,6 +100,8 @@ function parseRequestResponse(xhrResponseText)
 function updateCardList(lambdaResponse)
 {	
 	var cardList = document.getElementById("cardList");
+	var eventChoiceList = document.getElementById("eventChoice");
+	var layoutChoiceList = document.getElementById("layoutChoice");
 	
 	var responseCardList = lambdaResponse["cards"];
 	var responseEventList = lambdaResponse["events"];
@@ -109,6 +111,8 @@ function updateCardList(lambdaResponse)
 	layouts = responseLayoutList;
 	
 	var output = "";
+	var eventChoiceOutput = "";
+	var layoutChoiceOutput = "";
 	
 	for (var i = 0; i < responseEventList.length; i++)
 	{
@@ -117,9 +121,11 @@ function updateCardList(lambdaResponse)
 		var eventName = event.name;
 		
 		output += "<h3>" + eventName + "</h3><ul id=\"event-" + eventId + "\" onclick=selectCard(event) onmousedown=doNothing()></ul>";
+		eventChoiceOutput += "<option value =\"" + eventId + "\">" + eventName + "</option>";
 	}
 	
 	cardList.innerHTML = output;
+	eventChoiceList.innerHTML = eventChoiceOutput;
 		
 	for (var i = 0; i < responseCardList.length; i++)
 	{
@@ -135,16 +141,26 @@ function updateCardList(lambdaResponse)
 		cardEntry += "<li>ID: " + cardId + "\tRecipient: " + recipient + "</li>";
 		eventList.innerHTML = cardEntry;
 	}
+	
+	console.log(layouts);
+	for (var i = 0; i < layouts.length; i++)
+	{
+		var layoutId = layouts[i].id;
+		var layoutName = layouts[i].layout;
+		layoutChoiceOutput += "<option value =\"" + layoutId + "\">" + layoutName + "</option>";
+	}
+	layoutChoiceList.innerHTML = layoutChoiceOutput;
+	
 }
 
-function testreset(){
-	document.getElementById('id01').style.display='none';
-	document.getElementById("form01").reset();
-}
-
-function handleCreateCardClick()
+function handleCreateCardClick(e)
 {
-
+	var eventSelect = document.getElementById("eventChoice");
+	var eventId = events[eventSelect.selectedIndex].id;
+	var layoutSelect = document.getElementById("layoutChoice");
+	var layoutId = layouts[layoutSelect.selectedIndex].id;
+	console.log(eventId);
+	console.log(layoutId);
 }
 
 
