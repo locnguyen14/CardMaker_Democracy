@@ -1,8 +1,10 @@
+<!DOCTYPE html>
 <html>
 	<head>
 		<title>Democracy CardMaker</title>
 
 		<link rel='stylesheet' href='style.css'>
+		<link rel='stylesheet' href='mainLayout.css'>
 		
 		<script type='text/javascript' src='api.js'></script>
 	
@@ -20,13 +22,29 @@
 	</head>
 	<body onload="initialize()">
 	
-	<div>
-	<h1>DEMOCRACY CARDMAKER</h1>
-	<h3>Online greeting cards by the people, for the people.</h3>
+	<div id="topDiv">
+		<h1 class="header">DEMOCRACY CARDMAKER</h1>
+		<h3 class="header">Online greeting cards by the people, for the people.</h3>
 	</div>
 	
-	<button onclick="document.getElementById('create').style.display='block'" style = "width:auto;">Create Card</button>
-	<button onclick="" style = "width:auto">Delete Card</button>
+	<div id="middleDiv">
+		<div class="sideDiv">
+		</div>
+		
+		<div id="centerDiv">
+			<div id="cardList"></div>
+		</div>
+			
+		<div class="sideDiv">
+			<button onclick="document.getElementById('create').style.display='block'" style = "width:auto;">Create Card</button>
+			<button onclick="" style = "width:auto">Delete Card</button>
+		</div>
+	</div>
+	
+	<div id="bottomDiv">
+	</div>
+	
+	<!-- POP UP FOR CREATING CARD -->
 	<div id="create" class="modal">
   	<form id = "createForm" class="modal-content animate">
    	<div class="container">
@@ -48,10 +66,10 @@
         <button type="submit" onclick="JavaScript:handleCreateCardClick(this)" class="signupbtn">Create</button>
       </div>
     </div>
-  </form>
-</div>
+  	</form>
+	</div>
 	
-	<div id="cardList"></div>
+	
 	
 	</body>
 </html>

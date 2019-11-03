@@ -14,8 +14,6 @@ function selectCard(event)
 {
     if (event.target.tagName != "LI") return;
     
-    console.log(event);
-    
     // Get list of event lists
     var cardList = document.getElementById("cardList").getElementsByTagName("ul");
  
@@ -31,7 +29,6 @@ function selectCard(event)
     }
    
     event.target.classList.add('selected');
-    console.log(event.target.innerHTML);
 }
 
 // prevent unneeded selection of list elements on clicks
@@ -78,7 +75,6 @@ function parseRequestResponse(xhrResponseText)
 {
 	var xhrResponse = JSON.parse(xhrResponseText);
 	var body = JSON.parse(xhrResponse["body"]);
-	console.log(body);
 	
 	var statusCode = body["statusCode"];
 	var errorMessage = "";

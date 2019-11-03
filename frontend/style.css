@@ -1,5 +1,5 @@
 .selected {
-  background: #80b6ed;
+  background: #4CAF50;
 }
 
 /* Full-width input fields */
@@ -20,7 +20,8 @@ button {
     margin: 8px 0;
     border: none;
     cursor: pointer;
-    width: 100%;x
+    width: 100%;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
 }
 
 select{
