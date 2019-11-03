@@ -247,15 +247,15 @@ function processDeleteCard(cardId)
 		{
 			console.log("Received request");
 			console.log(xhr.responseText);
-		    //var requestResponse = parseRequestResponse(xhr.responseText);
-		    //if (requestResponse[2] != null)
-		    //{
-		    //	updateCardList(requestResponse[2])
-		    //}
-		    //else
-		    //{
-		    //	console.log(requestResponse[1]);
-		    //}
+		    var requestResponse = parseRequestResponse(xhr.responseText);
+		    if (requestResponse[2] != null)
+		    {
+		    	updateCardList(requestResponse[2])
+		    }
+		    else
+		    {
+		    	console.log(requestResponse[1]);
+		    }
 		}
 		else
 		{
