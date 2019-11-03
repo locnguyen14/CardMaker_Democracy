@@ -1,8 +1,8 @@
 var baseUrl = "https://yvmlvrpr1m.execute-api.us-east-1.amazonaws.com/alpha/"; 
 
 var listCardsUrl	= baseUrl + "main/list/cards";   // GET
-var deleteCardUrl	= baseUrl + "main/delete";       // GET
-var createCardUrl 	= baseUrl + "main/create";		 // POST
+var deleteCardUrl	= baseUrl + "main/delete";
+var createCardUrl 	= baseUrl + "main/create";
 
 /*
  *		CARD SELECTION CODE
@@ -19,7 +19,7 @@ function selectCard(event)
     // Get list of event lists
     var cardList = document.getElementById("cardList").getElementsByTagName("ul");
  
-    // For each event list, deselect all selected 
+    // For each event list, deselect all selected
     for (var i = 0; i < cardList.length; i++)
     {
     	var eventCardList = cardList[i].getElementsByTagName("li");
@@ -138,7 +138,7 @@ function updateCardList(lambdaResponse)
 		
 		console.log(eventList);
 		var cardEntry = eventList.innerHTML;
-		cardEntry += "<li><b>ID:</b> " + cardId + "         <b>Recipient:</b> " + recipient + "</li>";
+		cardEntry += "<li>ID: " + cardId + "\tRecipient: " + recipient + "</li>";
 		eventList.innerHTML = cardEntry;
 	}
 	
@@ -155,57 +155,110 @@ function updateCardList(lambdaResponse)
 
 function handleCreateCardClick(e)
 {
+	var recipientName = document.getElementById("recipientName").value;
 	var eventSelect = document.getElementById("eventChoice");
-	var eventId = events[eventSelect.selectedIndex].id;
+	var eventId = events[eventSelect.selectedIndex].id.toString();
 	var layoutSelect = document.getElementById("layoutChoice");
-	var layoutId = layouts[layoutSelect.selectedIndex].id;
+	var layoutId = layouts[layoutSelect.selectedIndex].id.toString();
 	console.log(eventId);
 	console.log(layoutId);
+	console.log(recipientName);
+	data = {};
+	data["recipientName"] = recipientName;
+	data["eventId"] = eventId;
+	data["layoutId"] = layoutId;
+	var js = JSON.stringify(data);
+	console.log("JS:" + js);
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", createCardUrl, true);
+	xhr.send(js);
+	console.log("Sent request");
+	xhr.onloadend = function ()
+	{
+		if (xhr.readyState == XMLHttpRequest.DONE)
+		{
+			console.log("Received request");
+			console.log(xhr.responseText);
+		    var requestResponse = parseRequestResponse(xhr.responseText);
+		    if (requestResponse[2] != null)
+		    {
+		    	updateCardList(requestResponse[2])
+		    }
+		    else
+		    {
+		    	console.log(requestResponse[1]);
+		    }
+		}
+		else
+		{
+			console.log("Error during xhr");
+		}
+	}
 }
 
-
-
-function handleDeleteCardClick(event)
+function handleDeleteCardClick()
 {
-	var selectedCard = document.querySelector(".selected");
-	// Prompt alert if nothing is selected.
-	if(selectedCard == null);
+	// Get a list of event list
+	var cardList = document.getElementById("cardList").getElementsByTagName("ul");
+	
+	//Extract out the selected card. I.E elements with class attribute = "selected"
+	var count = 0
+	for (var i =0; i < cardList.length; i++)
 	{
-		alert("Please select a card to delete");
+		if(cardList[i].querySelector(".selected") !== null) 
+		{
+			count++;
+			selectedCardId = cardList[i].querySelector(".selected").innerHTML.split("\t")[0].split(" ")[1];
+		}
+		else {continue;}
+	}
+	
+	// Check if anything is selected
+	if(count > 0){
+		if(confirm("Do you want to delete Card " + selectedCardId + "?"))
+		{
+			console.log("Confirm to delete " + selectedCardId);
+			processDeleteCard(selectedCardId);
+		}
 	}
 	else
 	{
-		var cardID = selectedCard.innerHTML.split(" ")[1];
-		console.log(cardID)
-		if (confirm("Do you want to delete" + cardID)) return;
-//		{
-//			var xhr = new XMLHttpRequest();
-//			xhr.open("GET", deleteCardUrl, true);
-//			
-//			//Send the collected data as json. In this case nothing
-//			xhr.send()
-//			
-//			xhr.onloadend = function()
-//			{
-//				console.log(xhr);
-//				console.log(xhr.request);
-//				if (xhr.readyState == XMLHttpRequest.DONE)
-//				{
-//					var RequestResponse = parseRequestResponse(xhr.responseText);
-//					if (requestResponse[2] != null)
-//					{
-//						updateCardList(requestResponse[2]);
-//					}
-//					else
-//					{
-//						console.log(requestResponse[1]);
-//					}
-//				}
-//				else
-//				{
-//					console.log("Error during xhr");
-//				}
-//			}
-//		}
-	}	
+		alert("You did not select antyhing");
+	}
+	
+}
+
+function processDeleteCard(cardId)
+{
+//	var data = {}
+//	data["cardId"] = cardId;
+//	var js = JSON.stringify(data);
+//	console.log("JS:" + js);
+	var xhr = new XMLHttpRequest();
+	var newDeleteCardUrl = `${deleteCardUrl}/${cardId}`;
+	xhr.open("GET", newDeleteCardUrl, true);
+	xhr.send();
+	console.log("Sent request");
+//	console.log(newDeleteCardUrl);
+	xhr.onloadend = function ()
+	{
+		if (xhr.readyState == XMLHttpRequest.DONE)
+		{
+			console.log("Received request");
+			console.log(xhr.responseText);
+		    var requestResponse = parseRequestResponse(xhr.responseText);
+		    if (requestResponse[2] != null)
+		    {
+		    	updateCardList(requestResponse[2])
+		    }
+		    else
+		    {
+		    	console.log(requestResponse[1]);
+		    }
+		}
+		else
+		{
+			console.log("Error during xhr");
+		}
+	}
 }

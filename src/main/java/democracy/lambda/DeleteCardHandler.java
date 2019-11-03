@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.HashMap;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -51,6 +52,7 @@ public class DeleteCardHandler implements RequestStreamHandler {
 		String path;
 		int cardID=-1;
 		
+		
 		try 
 		{
 			BufferedReader reader = new BufferedReader(new InputStreamReader(input));
@@ -58,7 +60,7 @@ public class DeleteCardHandler implements RequestStreamHandler {
 			JSONObject event = (JSONObject) parser.parse(reader);
 			logger.log("event:" + event.toJSONString());
 			
-			path = (String) event.get("cardId"); ///for lambda testing purpose, keep it path (which is the id itself)
+			path = (String) ((JSONObject) event.get("pathParameters")).get("cardId"); // always check the cloudwatch log
 			logger.log("Path=" + path);
 			cardID = Integer.parseInt(path);
 			
