@@ -14,10 +14,12 @@ function selectCard(event)
 {
     if (event.target.tagName != "LI") return;
     
+    console.log(event);
+    
     // Get list of event lists
     var cardList = document.getElementById("cardList").getElementsByTagName("ul");
  
-    // For each event list, deselect all selected 
+    // For each event list, deselect all selected
     for (var i = 0; i < cardList.length; i++)
     {
     	var eventCardList = cardList[i].getElementsByTagName("li");
@@ -29,6 +31,7 @@ function selectCard(event)
     }
    
     event.target.classList.add('selected');
+    console.log(event.target.innerHTML);
 }
 
 // prevent unneeded selection of list elements on clicks
@@ -75,6 +78,7 @@ function parseRequestResponse(xhrResponseText)
 {
 	var xhrResponse = JSON.parse(xhrResponseText);
 	var body = JSON.parse(xhrResponse["body"]);
+	console.log(body);
 	
 	var statusCode = body["statusCode"];
 	var errorMessage = "";
@@ -134,7 +138,7 @@ function updateCardList(lambdaResponse)
 		
 		console.log(eventList);
 		var cardEntry = eventList.innerHTML;
-		cardEntry += "<li><b>ID:</b> " + cardId + "         <b>Recipient:</b> " + recipient + "</li>";
+		cardEntry += "<li>ID: " + cardId + "\tRecipient: " + recipient + "</li>";
 		eventList.innerHTML = cardEntry;
 	}
 	
@@ -151,15 +155,110 @@ function updateCardList(lambdaResponse)
 
 function handleCreateCardClick(e)
 {
+	var recipientName = document.getElementById("recipientName").value;
 	var eventSelect = document.getElementById("eventChoice");
-	var eventId = events[eventSelect.selectedIndex].id;
+	var eventId = events[eventSelect.selectedIndex].id.toString();
 	var layoutSelect = document.getElementById("layoutChoice");
-	var layoutId = layouts[layoutSelect.selectedIndex].id;
+	var layoutId = layouts[layoutSelect.selectedIndex].id.toString();
 	console.log(eventId);
 	console.log(layoutId);
+	console.log(recipientName);
+	data = {};
+	data["recipientName"] = recipientName;
+	data["eventId"] = eventId;
+	data["layoutId"] = layoutId;
+	var js = JSON.stringify(data);
+	console.log("JS:" + js);
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", createCardUrl, true);
+	xhr.send(js);
+	console.log("Sent request");
+	xhr.onloadend = function ()
+	{
+		if (xhr.readyState == XMLHttpRequest.DONE)
+		{
+			console.log("Received request");
+			console.log(xhr.responseText);
+		    var requestResponse = parseRequestResponse(xhr.responseText);
+		    if (requestResponse[2] != null)
+		    {
+		    	updateCardList(requestResponse[2])
+		    }
+		    else
+		    {
+		    	console.log(requestResponse[1]);
+		    }
+		}
+		else
+		{
+			console.log("Error during xhr");
+		}
+	}
 }
 
 function handleDeleteCardClick()
 {
+	// Get a list of event list
+	var cardList = document.getElementById("cardList").getElementsByTagName("ul");
 	
+	//Extract out the selected card. I.E elements with class attribute = "selected"
+	var count = 0
+	for (var i =0; i < cardList.length; i++)
+	{
+		if(cardList[i].querySelector(".selected") !== null) 
+		{
+			count++;
+			selectedCardId = cardList[i].querySelector(".selected").innerHTML.split("\t")[0].split(" ")[1];
+		}
+		else {continue;}
+	}
+	
+	// Check if anything is selected
+	if(count > 0){
+		if(confirm("Do you want to delete Card " + selectedCardId + "?"))
+		{
+			console.log("Confirm to delete " + selectedCardId);
+			processDeleteCard(selectedCardId);
+		}
+	}
+	else
+	{
+		alert("You did not select antyhing");
+	}
+	
+}
+
+function processDeleteCard(cardId)
+{
+//	var data = {}
+//	data["cardId"] = cardId;
+//	var js = JSON.stringify(data);
+//	console.log("JS:" + js);
+	var xhr = new XMLHttpRequest();
+	var newDeleteCardUrl = `${deleteCardUrl}/${cardId}`;
+	xhr.open("GET", newDeleteCardUrl, true);
+	xhr.send();
+	console.log("Sent request");
+//	console.log(newDeleteCardUrl);
+	xhr.onloadend = function ()
+	{
+		if (xhr.readyState == XMLHttpRequest.DONE)
+		{
+			console.log("Received request");
+			console.log(xhr.responseText);
+		    var requestResponse = parseRequestResponse(xhr.responseText);
+		    if (requestResponse[2] != null)
+		    {
+		    	updateCardList(requestResponse[2])
+		    }
+		    else
+		    {
+		    	console.log(requestResponse[1]);
+		    }
+		}
+		else
+		{
+			console.log("Error during xhr");
+		}
+	}
 }
