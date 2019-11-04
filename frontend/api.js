@@ -14,7 +14,11 @@ function selectCard(event)
 {
     if (event.target.tagName != "LI") return;
     
-    console.log(event);
+    if (event.target.classList.contains('selected')) 
+    {
+    	event.target.classList.remove('selected');
+    	return;
+    }
     
     // Get list of event lists
     var cardList = document.getElementById("cardList").getElementsByTagName("ul");
@@ -31,7 +35,6 @@ function selectCard(event)
     }
    
     event.target.classList.add('selected');
-    console.log(event.target.innerHTML);
 }
 
 // prevent unneeded selection of list elements on clicks
@@ -57,7 +60,6 @@ function refreshCardList()
 	{
 		if (xhr.readyState == XMLHttpRequest.DONE)
 		{
-			console.log(xhr.responseText);
 		    var requestResponse = parseRequestResponse(xhr.responseText);
 		    if (requestResponse[2] != null)
 		    {
@@ -65,7 +67,7 @@ function refreshCardList()
 		    }
 		    else
 		    {
-		    	console.log(requestResponse[1]);
+		    	alert(requestResponse[1]);
 		    }
 		}
 		else
@@ -79,7 +81,6 @@ function parseRequestResponse(xhrResponseText)
 {
 	var xhrResponse = JSON.parse(xhrResponseText);
 	var body = JSON.parse(xhrResponse["body"]);
-	console.log(body);
 	
 	var statusCode = body["statusCode"];
 	var errorMessage = "";
@@ -88,7 +89,6 @@ function parseRequestResponse(xhrResponseText)
 	if (statusCode == 200)
 	{
 		response = body["response"];
-		console.log(response);
 	} 
 	else
 	{
@@ -137,13 +137,11 @@ function updateCardList(lambdaResponse)
 		
 		var eventList = document.getElementById("event-"+eventId);
 		
-		console.log(eventList);
 		var cardEntry = eventList.innerHTML;
 		cardEntry += "<li>ID: " + cardId + "\tRecipient: " + recipient + "</li>";
 		eventList.innerHTML = cardEntry;
 	}
 	
-	console.log(layouts);
 	for (var i = 0; i < layouts.length; i++)
 	{
 		var layoutId = layouts[i].id;
@@ -157,19 +155,17 @@ function updateCardList(lambdaResponse)
 function handleCreateCardClick(e)
 {
 	var recipientName = document.getElementById("recipientName").value;
+	if (recipientName == "") { return; }
+	
 	var eventSelect = document.getElementById("eventChoice");
 	var eventId = events[eventSelect.selectedIndex].id.toString();
 	var layoutSelect = document.getElementById("layoutChoice");
 	var layoutId = layouts[layoutSelect.selectedIndex].id.toString();
-	console.log(eventId);
-	console.log(layoutId);
-	console.log(recipientName);
 	data = {};
 	data["recipientName"] = recipientName;
 	data["eventId"] = eventId;
 	data["layoutId"] = layoutId;
 	var js = JSON.stringify(data);
-	console.log("JS:" + js);
 	var xhr = new XMLHttpRequest();
 	xhr.open("POST", createCardUrl, true);
 	xhr.send(js);
@@ -178,8 +174,7 @@ function handleCreateCardClick(e)
 	{
 		if (xhr.readyState == XMLHttpRequest.DONE)
 		{
-			console.log("Received request");
-			console.log(xhr.responseText);
+			console.log("Received response");
 		    var requestResponse = parseRequestResponse(xhr.responseText);
 		    if (requestResponse[2] != null)
 		    {
@@ -187,7 +182,7 @@ function handleCreateCardClick(e)
 		    }
 		    else
 		    {
-		    	console.log(requestResponse[1]);
+		    	alert(requestResponse[1]);
 		    }
 		}
 		else
@@ -215,26 +210,22 @@ function handleDeleteCardClick()
 	}
 	
 	// Check if anything is selected
-	if(count > 0){
+	if(count > 0)
+	{
 		if(confirm("Do you want to delete Card " + selectedCardId + "?"))
 		{
-			console.log("Confirm to delete " + selectedCardId);
 			processDeleteCard(selectedCardId);
 		}
 	}
 	else
 	{
-		alert("You did not select antyhing");
+		alert("Please select a card to delete.");
 	}
 	
 }
 
 function processDeleteCard(cardId)
 {
-//	var data = {}
-//	data["cardId"] = cardId;
-//	var js = JSON.stringify(data);
-//	console.log("JS:" + js);
 	var xhr = new XMLHttpRequest();
 	var newDeleteCardUrl = `${deleteCardUrl}/${cardId}`
 	xhr.open("GET", newDeleteCardUrl, true);
@@ -244,17 +235,15 @@ function processDeleteCard(cardId)
 	{
 		if (xhr.readyState == XMLHttpRequest.DONE)
 		{
-			console.log("Received request");
-			console.log(xhr.responseText);
-		    var requestResponse = JSON.parse(xhr.responseText)["response"]
-		    console.log(requestResponse)
+			console.log("Received response");
+		    var requestResponse = JSON.parse(xhr.responseText)["response"];
 		    if (requestResponse != null)
 		    {
 		    	updateCardList(requestResponse)
 		    }
 		    else
 		    {
-		    	console.log("Error no card existed anymore ");
+		    	alert("Error no card existed anymore ");
 		    }
 		}
 		else
