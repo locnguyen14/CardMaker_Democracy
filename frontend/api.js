@@ -236,25 +236,25 @@ function processDeleteCard(cardId)
 //	var js = JSON.stringify(data);
 //	console.log("JS:" + js);
 	var xhr = new XMLHttpRequest();
-	var newDeleteCardUrl = `${deleteCardUrl}/${cardId}`;
+	var newDeleteCardUrl = `${deleteCardUrl}/${cardId}`
 	xhr.open("GET", newDeleteCardUrl, true);
 	xhr.send();
 	console.log("Sent request");
-//	console.log(newDeleteCardUrl);
 	xhr.onloadend = function ()
 	{
 		if (xhr.readyState == XMLHttpRequest.DONE)
 		{
 			console.log("Received request");
 			console.log(xhr.responseText);
-		    var requestResponse = parseRequestResponse(xhr.responseText);
-		    if (requestResponse[2] != null)
+		    var requestResponse = JSON.parse(xhr.responseText)["response"]
+		    console.log(requestResponse)
+		    if (requestResponse != null)
 		    {
-		    	updateCardList(requestResponse[2])
+		    	updateCardList(requestResponse)
 		    }
 		    else
 		    {
-		    	console.log(requestResponse[1]);
+		    	console.log("Error no card existed anymore ");
 		    }
 		}
 		else

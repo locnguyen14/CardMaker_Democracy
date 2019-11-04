@@ -72,7 +72,7 @@ public class DeleteCardHandler implements RequestStreamHandler {
 		catch(ParseException pe) 
 		{
 			logger.log(pe.toString());
-			response = new RequestResponse(422, "Bad Request");  // unable to process input
+			response = new RequestResponse(422, "Bad Request Parsing");  // unable to process input
 			responseJson.put("body", new Gson().toJson(response));
 			inputProcessingFailed = true;
 			path = null;
@@ -80,7 +80,7 @@ public class DeleteCardHandler implements RequestStreamHandler {
 		catch(NumberFormatException ne) 
 		{
 			logger.log(ne.toString());
-			response = new RequestResponse(422, "Bad Request");  // unable to process input
+			response = new RequestResponse(422, "Bad Request Number Format");  // unable to process input
 			responseJson.put("body", new Gson().toJson(response));
 			inputProcessingFailed = true;
 			path = null;
