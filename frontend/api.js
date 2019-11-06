@@ -7,7 +7,6 @@ var createCardUrl 	= baseUrl + "main/create";
 /*
  *		CARD SELECTION CODE
  */
-
 var selectedCardId = null;
 
 function selectCard(event) 
@@ -17,6 +16,7 @@ function selectCard(event)
     if (event.target.classList.contains('selected')) 
     {
     	event.target.classList.remove('selected');
+    	selectedCardId = null;
     	return;
     }
     
@@ -35,20 +35,19 @@ function selectCard(event)
     }
    
     event.target.classList.add('selected');
+    selectedCardId = event.target.value;
 }
 
 // prevent unneeded selection of list elements on clicks
-function doNothing() 
-{
-	return false;
-};
+function doNothing() { return false; };
 
 /*
  *		API CODE
  */
 
-events = null;
-layouts = null;
+masterCardList = {};
+masterEventList = {};
+masterLayoutList = {};
 
 function refreshCardList()
 {
@@ -100,72 +99,90 @@ function parseRequestResponse(xhrResponseText)
 
 function updateCardList(lambdaResponse)
 {	
-	var cardList = document.getElementById("cardList");
-	var eventChoiceList = document.getElementById("eventChoice");
-	var layoutChoiceList = document.getElementById("layoutChoice");
-	
 	var responseCardList = lambdaResponse["cards"];
 	var responseEventList = lambdaResponse["events"];
 	var responseLayoutList = lambdaResponse["layouts"];
 	
-	events = responseEventList;
-	layouts = responseLayoutList;
-	
-	var output = "";
-	var eventChoiceOutput = "";
-	var layoutChoiceOutput = "";
-	
 	for (var i = 0; i < responseEventList.length; i++)
 	{
-		var event= responseEventList[i];
-		var eventId = event.id;
-		var eventName = event.name;
-		
-		output += "<h3>" + eventName + "</h3><ul id=\"event-" + eventId + "\" onclick=selectCard(event) onmousedown=doNothing()></ul>";
-		eventChoiceOutput += "<option value =\"" + eventId + "\">" + eventName + "</option>";
+		var jsonEvent = responseEventList[i];
+		masterEventList[jsonEvent.name] = jsonEvent.id;
+		masterCardList[jsonEvent.id] = [];
 	}
 	
-	cardList.innerHTML = output;
-	eventChoiceList.innerHTML = eventChoiceOutput;
-		
 	for (var i = 0; i < responseCardList.length; i++)
 	{
-		var card = responseCardList[i];
-		var cardId = card.id;
-		var eventId = card.eventId;
-		var recipient = card.recipientName;
-		
-		var eventList = document.getElementById("event-"+eventId);
-		
-		var cardEntry = eventList.innerHTML;
-		cardEntry += "<li>ID: " + cardId + "\tRecipient: " + recipient + "</li>";
-		eventList.innerHTML = cardEntry;
+		var responseCard = responseCardList[i];
+		masterCardList[responseCard.eventId].push(responseCard);
 	}
 	
-	for (var i = 0; i < layouts.length; i++)
+	for (var i = 0; i < responseLayoutList.length; i++)
 	{
-		var layoutId = layouts[i].id;
-		var layoutName = layouts[i].layout;
-		layoutChoiceOutput += "<option value =\"" + layoutId + "\">" + layoutName + "</option>";
+		var responseLayout = responseLayoutList[i];
+		masterLayoutList[responseLayout.layout] = responseLayout.id;
+	}
+	
+	displayCardList();
+}
+
+function displayCardList()
+{
+	// Set the events in CardList and EventChoice
+	var cardList = document.getElementById("cardList");
+	var cardListOutput = "";
+	var eventChoiceList = document.getElementById("eventChoice");
+	var eventChoiceOutput = "";
+	for (let [eventName, eventId] of Object.entries(masterEventList))
+	{
+		cardListOutput += "<h3>" + eventName + "</h3><ul id=\"event-" + eventId + "\" onclick=selectCard(event) onmousedown=doNothing()></ul>";
+		eventChoiceOutput += "<option value=\"" + eventId + "\">" + eventName + "</option>";
+	}
+	cardList.innerHTML = cardListOutput;
+	eventChoiceList.innerHTML = eventChoiceOutput;
+	
+	// Set the card li elements for each event ul
+	for (let [eventId, cardArray] of Object.entries(masterCardList))
+	{
+		var eventUl = document.getElementById("event-" + eventId);
+		var eventUlOutput = "";
+		for (var i = 0; i < cardArray.length; i++)
+		{
+			var currCard = cardArray[i];
+			eventUlOutput += "<li value=\"" + currCard.id + "\">ID: " + currCard.id + "   Recipient: " + currCard.recipientName + "</li>";
+		}
+		eventUl.innerHTML = eventUlOutput;
+	}
+	
+	// Set the layout choices for create card dialog
+	var layoutChoiceList = document.getElementById("layoutChoice");
+	var layoutChoiceOutput = "";
+	for (let [layoutName, layoutId] of Object.entries(masterLayoutList))
+	{
+		layoutChoiceOutput += "<option value=\"" + layoutId + "\">" + layoutName + "</option>";
 	}
 	layoutChoiceList.innerHTML = layoutChoiceOutput;
-	
 }
 
 function handleCreateCardClick(e)
 {
+	// Check that recipient field has a value
 	var recipientName = document.getElementById("recipientName").value;
 	if (recipientName == "") { return; }
 	
+	// Extract selected eventId and layoutId
 	var eventSelect = document.getElementById("eventChoice");
-	var eventId = events[eventSelect.selectedIndex].id.toString();
+	var eventId = eventSelect.options[eventSelect.selectedIndex].value;
 	var layoutSelect = document.getElementById("layoutChoice");
-	var layoutId = layouts[layoutSelect.selectedIndex].id.toString();
+	var layoutId = layoutSelect.options[layoutSelect.selectedIndex].value;
+	
+	// Create JSON object for request
 	data = {};
 	data["recipientName"] = recipientName;
 	data["eventId"] = eventId;
 	data["layoutId"] = layoutId;
 	var js = JSON.stringify(data);
+	
+	// Send request
 	var xhr = new XMLHttpRequest();
 	xhr.open("POST", createCardUrl, true);
 	xhr.send(js);
@@ -192,36 +209,21 @@ function handleCreateCardClick(e)
 	}
 }
 
+function handleEditCardClick()
+{
+	
+}
+
 function handleDeleteCardClick()
 {
-	// Get a list of event list
-	var cardList = document.getElementById("cardList").getElementsByTagName("ul");
-	
-	//Extract out the selected card. I.E elements with class attribute = "selected"
-	var count = 0
-	for (var i =0; i < cardList.length; i++)
-	{
-		if(cardList[i].querySelector(".selected") !== null) 
-		{
-			count++;
-			selectedCardId = cardList[i].querySelector(".selected").innerHTML.split("\t")[0].split(" ")[1];
-		}
-		else {continue;}
-	}
-	
-	// Check if anything is selected
-	if(count > 0)
-	{
-		if(confirm("Do you want to delete Card " + selectedCardId + "?"))
-		{
-			processDeleteCard(selectedCardId);
-		}
-	}
-	else
+	if (selectedCardId == null)
 	{
 		alert("Please select a card to delete.");
+	} 
+	else if(confirm("Do you want to delete Card " + selectedCardId + "?"))
+	{
+		processDeleteCard(selectedCardId);
 	}
-	
 }
 
 function processDeleteCard(cardId)
