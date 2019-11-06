@@ -1,0 +1,20 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<script>
+		var editorCardId = sessionStorage.getItem("editCardId");
+		if (editorCardId == null)
+		{
+			console.log("no id...");
+		}
+		else 
+		{
+			console.log(editorCardId);
+			sessionStorage.removeItem("editCardId");
+		}
+	</script>
+</head>
+<body>
+	<h3>WE MADE IT</h3>
+</body>
+</html>

@@ -1,8 +1,11 @@
 var baseUrl = "https://yvmlvrpr1m.execute-api.us-east-1.amazonaws.com/alpha/"; 
+var htmlBaseUrl = "https://cs509-democracy.s3.amazonaws.com/";
 
 var listCardsUrl	= baseUrl + "main/list/cards";   // GET
 var deleteCardUrl	= baseUrl + "main/delete";
 var createCardUrl 	= baseUrl + "main/create";
+
+var editorUrl		= htmlBaseUrl + "nonindex.html";
 
 /*
  *		CARD SELECTION CODE
@@ -211,7 +214,11 @@ function handleCreateCardClick(e)
 
 function handleEditCardClick()
 {
+	if (selectedCardId == null) { alert("Please select a card to edit."); return; }
 	
+	sessionStorage.setItem("editCardId", selectedCardId);
+	
+	location.replace(editorUrl);
 }
 
 function handleDeleteCardClick()
@@ -241,7 +248,8 @@ function processDeleteCard(cardId)
 		    var requestResponse = JSON.parse(xhr.responseText)["response"];
 		    if (requestResponse != null)
 		    {
-		    	updateCardList(requestResponse)
+		    	updateCardList(requestResponse);
+		    	selectedCardId = null;
 		    }
 		    else
 		    {
