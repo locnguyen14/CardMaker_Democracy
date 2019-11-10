@@ -1,20 +1,73 @@
 <!DOCTYPE HTML>
 <html>
 <head>
+	<title>Democracy CardMaker</title>
+
+	<link rel='stylesheet' href='style.css'>
+	<link rel='stylesheet' href='editorLayout.css'>
+		
+	<script type='text/javascript' src='editorAPI.js'></script>
 	<script>
-		var editorCardId = sessionStorage.getItem("editCardId");
-		if (editorCardId == null)
+		editorCardId = null;
+		function initialize()
 		{
-			console.log("no id...");
-		}
-		else 
-		{
-			console.log(editorCardId);
-			sessionStorage.removeItem("editCardId");
+			editorCardId = sessionStorage.getItem("editCardId");
+			if (editorCardId == null)
+			{
+				console.log("No ID found in session storage.");
+			}
+			else 
+			{
+				console.log(editorCardId);
+				sessionStorage.removeItem("editCardId");
+				//API_retrieveCard();
+			}
+			refreshCardFacePanel();
+			
+			var frontCanvas = document.getElementById("frontCanvas");
+			var leftCanvas = document.getElementById("leftCanvas");
+			var rightCanvas = document.getElementById("rightCanvas");
+			var backCanvas = document.getElementById("backCanvas");
+			canvases = [frontCanvas, leftCanvas, rightCanvas, backCanvas];
+			for (var i = 0; i < 4; i += 1)
+			{
+				var ctx = canvases[i].getContext("2d");
+				if (i == 0) ctx.fillStyle = "#FF0000";
+				if (i == 1) ctx.fillStyle = "#FFFF00";
+				if (i == 2) ctx.fillStyle = "#00FF00";
+				if (i == 3) ctx.fillStyle = "#0000FF";
+				ctx.fillRect(0,0,100,100);
+			}
 		}
 	</script>
 </head>
-<body>
-	<h3>WE MADE IT</h3>
+<body onload="initialize()">
+	<div id="topDiv">
+		<h1 class="header">DEMOCRACY CARDMAKER</h1>
+		<h3 class="header">Editor Mode</h3>
+	</div>
+	
+	<div id="middleDiv">
+		<div class="sideDiv">
+			<h3>Navigate Card</h3>
+			<button id="leftButton" onclick="moveCardLeft(true)" style="width:60%">&lt;&lt;</button>
+			<button id="rightButton" onclick="moveCardLeft(false)" style="width:60%">&gt;&gt;</button>
+			<h3 id="currFaceName">Current Face: </h3>
+		</div>
+		
+		<div id="centerDiv">
+			<canvas id="frontCanvas" width="600" height="600" style="border:1px solid #c3c3c3;"></canvas>
+			<canvas id="leftCanvas" width="600" height="600" style="border:1px solid #c3c3c3;"></canvas>
+			<canvas id="rightCanvas" width="600" height="600" style="border:1px solid #c3c3c3;"></canvas>
+			<canvas id="backCanvas" width="600" height="600" style="border:1px solid #c3c3c3;"></canvas>
+		</div>
+			
+		<div class="sideDiv">
+		</div>
+	</div>
+	
+	<div id="bottomDiv">
+		
+	</div>
 </body>
 </html>
