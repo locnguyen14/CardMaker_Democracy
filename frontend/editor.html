@@ -20,35 +20,20 @@
 			{
 				console.log(editorCardId);
 				sessionStorage.removeItem("editCardId");
-				//API_retrieveCard();
+				API_retrieveCard();
 			}
+			/*TEMPORARY*/
+			API_parseVisualElementResponse()
+			API_handleVisualElementResponse();
 			refreshCardFacePanel();
-			
-			var frontCanvas = document.getElementById("frontCanvas");
-			var leftCanvas = document.getElementById("leftCanvas");
-			var rightCanvas = document.getElementById("rightCanvas");
-			var backCanvas = document.getElementById("backCanvas");
-			canvases = [frontCanvas, leftCanvas, rightCanvas, backCanvas];
-			for (var i = 0; i < 4; i += 1)
-			{
-				var ctx = canvases[i].getContext("2d");
-				if (i == 0) ctx.fillStyle = "#FF0000";
-				if (i == 1) ctx.fillStyle = "#FFFF00";
-				if (i == 2) ctx.fillStyle = "#00FF00";
-				if (i == 3) ctx.fillStyle = "#0000FF";
-				ctx.fillRect(0,0,100,100);
-			}
 		}
 	</script>
 </head>
 <body onload="initialize()">
-	<div id="topDiv">
-		<h1 class="header">DEMOCRACY CARDMAKER</h1>
-		<h3 class="header">Editor Mode</h3>
-	</div>
-	
 	<div id="middleDiv">
-		<div class="sideDiv">
+		<div class="sideDiv" style="border:1px solid black;">
+			<h2 class="header">DEMOCRACY CARDMAKER</h2>
+			<h3 class="header">Editor Mode</h3>
 			<h3>Navigate Card</h3>
 			<button id="leftButton" onclick="moveCardLeft(true)" style="width:60%">&lt;&lt;</button>
 			<button id="rightButton" onclick="moveCardLeft(false)" style="width:60%">&gt;&gt;</button>
@@ -62,7 +47,11 @@
 			<canvas id="backCanvas" width="600" height="600" style="border:1px solid #c3c3c3;"></canvas>
 		</div>
 			
-		<div class="sideDiv">
+		<div class="sideDiv" style="border:1px solid black;">
+			<h3>Tools</h3>
+			<button style="width:80%">Add Visual</button>
+			<button style="width:80%">Edit Visual</button>
+			<button style="width:80%">Delete Visual</button>
 		</div>
 	</div>
 	

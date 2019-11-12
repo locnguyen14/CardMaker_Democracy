@@ -5,7 +5,7 @@ var listCardsUrl	= baseUrl + "main/list/cards";   // GET
 var deleteCardUrl	= baseUrl + "main/delete";
 var createCardUrl 	= baseUrl + "main/create";
 
-var editorUrl		= htmlBaseUrl + "nonindex.html";
+var editorUrl		= htmlBaseUrl + "editor.html";
 
 /*
  *		CARD SELECTION CODE

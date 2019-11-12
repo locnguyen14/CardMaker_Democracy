@@ -1,9 +1,3 @@
-#topDiv 
-{
-	max-width: 100%;
-	height: 125px;	
-}
-
 .header
 {
 	font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
@@ -16,13 +10,19 @@
 	text-align: center;
 	width: 15%;
 	float: left;
-	height: 400px;
 	text-align: center;
 }
 
 #centerDiv
 {
-	width: 70%;
-	height: 600px;
+	width: 69%;
 	float: left;
+}
+
+
+canvas {
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
 }
