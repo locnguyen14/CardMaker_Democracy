@@ -16,8 +16,6 @@ import democracy.dao.EventDAO;
 import democracy.dao.LayoutDAO;
 import democracy.http.ChangeCardListResponse;
 import democracy.http.CreateCardRequest;
-import democracy.http.PostRequest;
-import democracy.http.PostResponse;
 import democracy.http.RequestResponse;
 import democracy.http.ResponseFieldGenerator;
 import democracy.model.Card;

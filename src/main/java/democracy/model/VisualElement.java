@@ -5,18 +5,27 @@ public class VisualElement
 	private final int id;
 	private final int cardId;
 	private final int faceId;
-	private final Bounds bounds;
+	private final int boundId;
 	private final String content;
-	private final int fontId;
+	private int fontId;
 	
-	public VisualElement(int id, int cardId, int faceId, Bounds bounds, String content, int fontId)
+	public VisualElement(int id, int cardId, int faceId, int boundId, String text, int fontId)
 	{
 		this.id = id;
 		this.cardId = cardId;
 		this.faceId = faceId;
-		this.bounds = bounds;
-		this.content = content;
+		this.boundId = boundId;
+		this.content = text;
 		this.fontId = fontId;
+	}
+	
+	public VisualElement(int id, int cardId, int faceId, int boundId, String image)
+	{
+		this.id = id;
+		this.cardId = cardId;
+		this.faceId = faceId;
+		this.boundId = boundId;
+		this.content = image;
 	}
 
 	public int getId() 
@@ -34,9 +43,9 @@ public class VisualElement
 		return faceId;
 	}
 
-	public Bounds getBounds() 
+	public int getBoundId() 
 	{
-		return bounds;
+		return boundId;
 	}
 
 	public String getContent() 
