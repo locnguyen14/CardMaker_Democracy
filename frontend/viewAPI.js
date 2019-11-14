@@ -2,8 +2,6 @@ var apiBaseUrl = "https://yvmlvrpr1m.execute-api.us-east-1.amazonaws.com/alpha/"
 var htmlBaseUrl = "https://cs509-democracy.s3.amazonaws.com/";
 
 var retrieveCardUrl 	= apiBaseUrl + "main/retrieve";
-var retrieveImagesUrl 	= apiBaseUrl + "main/list/images";
-var addTextBox 			= apiBaseUrl + "edit";
 
 var layoutId = null;
 var faceNumberToFaceId = [];
@@ -11,20 +9,21 @@ var faceIdToVisualElements = {};
 var faceIdToCanvasName = {};
 
 var currFaceIndex = 0;
-var selectedVisualId = null;
 var faceIndexDict = {};
 
 var bounds = {};
 var fonts = {};
 var layouts = {};
 
+var globalCardId = null;
 /*
  * 		API FUNCTIONS
  */
 
 function API_retrieveCard()
 {
-	var requestUrl = `${retrieveCardUrl}/${editorCardId}`;
+	var requestUrl = `${retrieveCardUrl}/${cardId}`;
+	console.log(requestUrl);
 	var xhr = new XMLHttpRequest();
 	xhr.open("GET", requestUrl, true);
 	xhr.send();
@@ -217,11 +216,6 @@ function drawElement(faceId, elt)
 		ctx.fillText(elt.content, elt.x, elt.y + elt.h, elt.w);
 		
 	}
-	
-	if (selectedVisualId != null && selectedVisualId == elt.id)
-	{
-		ctx.strokeRect(elt.x, elt.y, elt.w, elt.h);
-	}
 }
 
 function toggleVisualSelection(e)
@@ -245,84 +239,6 @@ function toggleVisualSelection(e)
 	
 	selectedVisualId = clickedId;
 	drawCard();
-}
-
-/*
- * 		BUTTON FUNCTIONS
- */
-
-function displayAddVisualForm()
-{
-	document.getElementById('addVisual').style.display='block';
-	
-	var xhr = new XMLHttpRequest();
-	xhr.open("GET", retrieveImagesUrl, true);
-	xhr.send();
-	console.log("API - RETRIEVE_IMAGES: Sent request");
-	xhr.onloadend = function ()
-	{
-		if (xhr.readyState == XMLHttpRequest.DONE)
-		{
-			console.log("API - RETRIEVE_CARD: Received response");
-			console.log(xhr.responseText);
-			//var requestResponse = JSON.parse();
-		}
-	}
-}
-
-function changeAddVisualFormView()
-{
-	var addVisualRadios = document.getElementsByName("visualType");
-	var selected = "";
-	for (var i = 0; i < addVisualRadios.length; i += 1)
-	{
-		if (addVisualRadios[i].checked)
-		{
-			selected = addVisualRadios[i].value;
-			break;
-		}
-	}
-	
-	var textBoxDiv = document.getElementById("addVisualTextBox");
-	var imageDiv = document.getElementById("addVisualImage");
-	if (selected == "textbox")
-	{
-		imageDiv.style.display = "none";
-		textBoxDiv.style.display = "block";
-	}
-	else 
-	{
-		textBoxDiv.style.display = "none";
-		imageDiv.style.display = "block";
-	}
-}
-
-function resetAddVisualForm()
-{
-	document.getElementById('addVisual').style.display='none';
-	document.getElementById("addVisualForm").reset();
-}
-
-function handleAddVisualFormClick(event)
-{
-	
-}
-
-function handleDeleteVisualClick()
-{
-	if (selectedVisualId == null)
-	{
-		alert("Please select a visual element to delete.");
-	} 
-	else if(confirm("Do you want to delete this visual element?"))
-	{
-		processDeleteVisual(selectedVisualId);
-	}
-}
-
-function processDeleteVisual(visualId)
-{
-	
 }
 
 /*

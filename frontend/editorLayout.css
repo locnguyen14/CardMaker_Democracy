@@ -26,3 +26,31 @@ canvas {
     margin-left: auto;
     margin-right: auto;
 }
+
+#loadimgbtn {
+	width: 20%;	
+	background-color: white;
+	color: black;
+	height: 50px;
+	border: 1px solid black;
+}
+
+.boundsLabel
+{
+	text-align: right;
+    float:left;
+    /*margin-right:15px;*/
+    width: 5%;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+}
+
+.boundsInput
+{
+	float:left;
+	margin-right:1%;
+}
+
+input[name="visualType"]
+{
+	font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+}

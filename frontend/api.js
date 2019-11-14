@@ -4,6 +4,7 @@ var htmlBaseUrl = "https://cs509-democracy.s3.amazonaws.com/";
 var listCardsUrl	= baseUrl + "main/list/cards";   // GET
 var deleteCardUrl	= baseUrl + "main/delete";
 var createCardUrl 	= baseUrl + "main/create";
+var generateCardUrl = baseUrl + "main/generateUrl";
 
 var editorUrl		= htmlBaseUrl + "editor.html";
 
@@ -245,6 +246,7 @@ function processDeleteCard(cardId)
 		if (xhr.readyState == XMLHttpRequest.DONE)
 		{
 			console.log("Received response");
+			console.log(xhr.responseText);
 		    var requestResponse = JSON.parse(xhr.responseText)["response"];
 		    if (requestResponse != null)
 		    {
@@ -261,4 +263,35 @@ function processDeleteCard(cardId)
 			console.log("Error during xhr");
 		}
 	}
+}
+
+function handleGenerateCardURLClick()
+{
+	if (selectedCardId == null)
+	{
+		alert("Please select a card.");
+	} 
+	else
+	{
+		document.getElementById('generateUrlModal').style.display='block';
+		processGenerateCardUrl(selectedCardId);
+	}
+}
+
+function processGenerateCardUrl(cardId)
+{
+	var xhr = new XMLHttpRequest();
+	var newGenerateUrlUrl = `${generateCardUrl}/${cardId}`;
+	xhr.open("GET", newGenerateUrlUrl, true);
+	//xhr.send();
+	console.log("Sent request");
+	xhr.onloadend = function()
+	{
+		
+	}
+}
+
+function handleCloseGenerateCardURLModal(e)
+{
+	document.getElementById('generateUrlModal').style.display='none';
 }

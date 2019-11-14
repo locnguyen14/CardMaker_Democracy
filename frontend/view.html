@@ -1,0 +1,55 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>Democracy CardMaker</title>
+
+	<link rel='stylesheet' href='style.css'>
+	<link rel='stylesheet' href='editorLayout.css'>
+		
+	<script type='text/javascript' src='viewAPI.js'></script>
+	<script>
+		var cardId = null;
+		
+		function initialize()
+		{
+			const urlParams = new URLSearchParams(window.location.search);
+			cardId = urlParams.get('cardId');
+			
+			if (cardId == null)
+			{
+				console.log("Invalid query string parameters");
+			}
+			else 
+			{
+				API_retrieveCard();
+			}
+		}
+	</script>
+</head>
+<body onload="initialize()">
+	<div id="middleDiv">
+		<div class="sideDiv" style="border:1px solid black;">
+			<h2 class="header">DEMOCRACY CARDMAKER</h2>
+			<h3 class="header">View Mode</h3>
+			<h3>Navigate Card</h3>
+			<button id="leftButton" onclick="moveCardLeft(true)" style="width:60%">&lt;&lt;</button>
+			<button id="rightButton" onclick="moveCardLeft(false)" style="width:60%">&gt;&gt;</button>
+			<h3 id="currFaceName">Current Face: </h3>
+		</div>
+		
+		<div id="centerDiv">
+			<canvas id="frontCanvas" width="600" height="600" style="border:1px solid #c3c3c3;"></canvas>
+			<canvas id="leftCanvas" width="600" height="600" style="border:1px solid #c3c3c3;"></canvas>
+			<canvas id="rightCanvas" width="600" height="600" style="border:1px solid #c3c3c3;"></canvas>
+			<canvas id="backCanvas" width="600" height="600" style="border:1px solid #c3c3c3;"></canvas>
+		</div>
+			
+		<div class="sideDiv">
+		</div>
+	</div>
+	
+	<div id="bottomDiv">
+		
+	</div>
+</body>
+</html>

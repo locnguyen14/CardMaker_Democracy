@@ -24,3 +24,24 @@
 	height: 800px;
 	float: left;
 }
+
+#generateUrlContainer
+{
+	margin: auto;
+	text-align: center;
+	font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+}
+
+#generateUrlButtonDiv
+{
+	width: 100%;
+  	text-align:center;
+  	justify-content: center;
+  	margin: auto;
+}
+
+#generateUrlButtonDiv::after {
+    content: "";
+    clear: both;
+    display: block;
+}
