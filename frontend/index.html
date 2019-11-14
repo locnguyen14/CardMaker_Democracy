@@ -39,6 +39,7 @@
 			<button onclick="document.getElementById('create').style.display='block'" style="width:80%">Create Card</button>
 			<button onclick="handleDeleteCardClick()" style="width:80%">Delete Card</button>
 			<button onclick="handleEditCardClick()" style="width:80%">Edit Card</button>
+			<button onclick="handleGenerateCardURLClick()" style="width:80%">Generate URL</button>
 		</div>
 	</div>
 	
@@ -70,7 +71,18 @@
   	</form>
 	</div>
 	
-	
+	<!-- POP UP FOR CARD URL -->
+	<div id="generateUrlModal" class="modal">
+		<div class="modal-content animate">
+		<div id="generateUrlContainer" class="container">
+			<label><b>View URL:</b></label><br>
+			<label>Waiting for server...</label><br><br>
+			<div id="generateUrlButtonDiv">
+				<button type="submit" onclick="JavaScript:handleCloseGenerateCardURLModal(this)" style="width:40%">OK</button>
+			</div>
+		</div>
+		</div>
+	</div>
 	
 	</body>
 </html>
