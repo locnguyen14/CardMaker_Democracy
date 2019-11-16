@@ -21,6 +21,7 @@ import democracy.http.ResponseFieldGenerator;
 import democracy.model.Card;
 import democracy.model.Event;
 import democracy.model.Layout;
+import democracy.model.VisualElement;
 
 public class CreateCardHandler implements RequestStreamHandler 
 {
@@ -47,7 +48,8 @@ public class CreateCardHandler implements RequestStreamHandler
 			}
 		}
 		if (valideventid && validlayoutid) {
-			Card card = new Card(1, eventid, recipient, layoutid);
+			Card card = new Card(0, eventid, recipient, layoutid);
+			VisualElement element = new VisualElement(0, cardId, 4, 7, "BackPage", 1);
 			return dao.addCard(card);
 		}
 		return false;

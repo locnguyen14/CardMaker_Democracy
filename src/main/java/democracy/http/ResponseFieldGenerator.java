@@ -61,4 +61,8 @@ public class ResponseFieldGenerator
 		
 		return new VisualElementResponse(layoutId, faces.toArray(new Face[0]), images.toArray(new VisualElement[0]), textboxes.toArray(new VisualElement[0]), fonts.toArray(new Font[0]), bounds.toArray(new Bounds[0]), layouts.toArray(new Layout[0]));
 	}
+	
+	public static GenerateUrlResponse getGenerateUrlResponse(int cardId) {
+		return new GenerateUrlResponse("https://cs509-democracy.s3.amazonaws.com/view.html?cardId="+ cardId);
+	}
 }
