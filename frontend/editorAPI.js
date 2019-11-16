@@ -3,7 +3,8 @@ var htmlBaseUrl = "https://cs509-democracy.s3.amazonaws.com/";
 
 var retrieveCardUrl 	= apiBaseUrl + "main/retrieve";
 var retrieveImagesUrl 	= apiBaseUrl + "main/list/images";
-var addTextBox 			= apiBaseUrl + "edit";
+var addTextBoxUrl		= apiBaseUrl + "edit";
+var deleteVisualUrl		= apiBaseUrl + "";
 
 var layoutId = null;
 var faceNumberToFaceId = [];
@@ -40,7 +41,6 @@ function API_retrieveCard()
 			
 			if (requestResponse["statusCode"] == 200)
 			{
-				console.log(requestResponse["response"]);
 				API_parseVisualElementResponse(requestResponse["response"]);
 				API_handleVisualElementResponse();
 				refreshCardFacePanel();
@@ -88,6 +88,16 @@ function API_parseVisualElementResponse(response)
 		fonts[font.id] = font;
 	}
 	
+	// Insert fonts into font selection of createTable
+	var fontSelectList = document.getElementById("fontChoice");
+	clearSelectList(fontSelectList);
+	var fontSelectOutput = ""
+	for (let [fontId, font] of Object.entries(fonts))
+	{
+		fontSelectOutput += "<option value=\"" + fontId + "\">" + font.name + ", " + font.style + "</option>";
+	}
+	fontSelectList.innerHTML = fontSelectOutput;
+	
 	var textboxes = response["textboxes"];
 	for (var i = 0; i < textboxes.length; i++)
 	{
@@ -117,9 +127,6 @@ function API_handleVisualElementResponse()
 	var frontCanvas = document.getElementById("frontCanvas");
 	var leftCanvas = document.getElementById("leftCanvas");
 	var rightCanvas = document.getElementById("rightCanvas");
-	console.log(layoutId);
-	console.log(layouts);
-	console.log(layouts[layoutId]);
 	if (layouts[layoutId] == "Portrait")
 	{
 		frontCanvas.height = "800";
@@ -188,7 +195,6 @@ function drawElement(faceId, elt)
 		var font = fonts[elt.fontId];
 		if (font == undefined) { return; }
 		var textFont = font.style + " " + fontSize + "px " + font.name;
-		console.log(textFont);
 		ctx.font = textFont;
 
 		// Fit to text box height;
@@ -251,9 +257,18 @@ function toggleVisualSelection(e)
  * 		BUTTON FUNCTIONS
  */
 
+function clearSelectList(selectList)
+{
+    for(var i = selectList.options.length - 1 ; i >= 0 ; i--)
+    {
+        selectList.remove(i);
+    }
+}
+
 function displayAddVisualForm()
 {
 	document.getElementById('addVisual').style.display='block';
+	return;
 	
 	var xhr = new XMLHttpRequest();
 	xhr.open("GET", retrieveImagesUrl, true);
@@ -305,7 +320,7 @@ function resetAddVisualForm()
 
 function handleAddVisualFormClick(event)
 {
-	
+	// Validate that the fields are properly filled out
 }
 
 function handleDeleteVisualClick()
@@ -322,7 +337,33 @@ function handleDeleteVisualClick()
 
 function processDeleteVisual(visualId)
 {
-	
+	var requestUrl = `${deleteVisualUrl}/${visualId}`;
+	var xhr = new XMLHttpRequest();
+	xhr.open("GET", requestUrl, true);
+	xhr.send();
+	console.log("API - DELETE_VISUAL: Sent request");
+	xhr.onloadend = function()
+	{
+		if (xhr.readyState == XMLHttpRequest.DONE)
+		{
+			console.log("API - DELETE_VISUAL: Received response");
+			console.log(xhr.responseText);
+			
+			var requestResponse = JSON.parse(xhr.responseText);
+			
+			if (requestResponse["statusCode"] == 200)
+			{
+				console.log(requestResponse);
+				API_parseVisualElementResponse(requestResponse["response"]);
+				API_handleVisualElementResponse();
+				refreshCardFacePanel();
+			}
+			else
+			{
+				alert(requestResponse["errorString"]);
+			}
+		}
+	}
 }
 
 /*

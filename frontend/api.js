@@ -283,15 +283,36 @@ function processGenerateCardUrl(cardId)
 	var xhr = new XMLHttpRequest();
 	var newGenerateUrlUrl = `${generateCardUrl}/${cardId}`;
 	xhr.open("GET", newGenerateUrlUrl, true);
-	//xhr.send();
-	console.log("Sent request");
+	xhr.send();
+	console.log("API - GENERATE URL: Sent request");
 	xhr.onloadend = function()
 	{
-		
+		if (xhr.readyState == XMLHttpRequest.DONE)
+		{
+			console.log("API - GENERATE URL: Received response");
+			
+			var requestResponse = JSON.parse(xhr.responseText);
+		   	
+	    	if (requestResponse["statusCode"] == 200)
+			{
+	    		var urlDisplay = document.getElementById("urlDisplay");
+	    		urlDisplay.innerHTML = requestResponse["response"]["url"];
+			}
+			else
+			{
+				alert(requestResponse["errorString"]);
+			}
+		}
+		else
+		{
+			console.log("Error during xhr");
+		}
 	}
 }
 
 function handleCloseGenerateCardURLModal(e)
 {
 	document.getElementById('generateUrlModal').style.display='none';
+	var urlDisplay = document.getElementById("urlDisplay");
+	urlDisplay.innerHTML = "Waiting for server...";
 }
