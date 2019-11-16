@@ -68,12 +68,20 @@ public class ElementDAO {
 	
 	public boolean deleteVisualElement(VisualElement element) throws Exception{
 		try {
+			
+			// Delete the element first
 			PreparedStatement ps = conn.prepareStatement("DELETE FROM ELEMENTS WHERE ELEMENTID = ?;");
 			ps.setInt(1, element.getId());	
-			int numAffected = ps.executeUpdate();
+			int numAffectedElement = ps.executeUpdate();
 			ps.close();
 			
-			return (numAffected == 1);
+			// Delete the bound associated with the element
+			PreparedStatement ps1 = conn.prepareStatement("DELETE FROM BOUNDS WHERE BOUNDSID = ?;");
+			ps1.setInt(1, element.getBoundId());	
+			int numAffectedBound = ps1.executeUpdate();
+			ps.close();
+			
+			return (numAffectedElement == 1 && numAffectedBound == 1);
 			
 		}
 		catch(Exception e) {
