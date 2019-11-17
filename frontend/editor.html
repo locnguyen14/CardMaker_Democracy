@@ -10,7 +10,7 @@
 	<script>
 		var editorCardId = null;
 		function initialize()
-		{
+		{	
 			var leftCanvas = document.getElementById("leftCanvas");
 			var rightCanvas = document.getElementById("rightCanvas");
 			var backCanvas = document.getElementById("backCanvas");
@@ -67,10 +67,10 @@
 	  
 	  <div>
 	  	<label><b>Bounds</b></label><br>
-	  	<label class="boundsLabel">X:</label><input class="boundsInput" style="width:17%" type="text" required>
-	  	<label class="boundsLabel">Y:</label><input class="boundsInput" style="width:17%" type="text" required>
-	  	<label class="boundsLabel">W:</label><input class="boundsInput" style="width:17%" type="text" required>
-	  	<label class="boundsLabel">H:</label><input class="boundsInput" style="width:17%" type="text" required>
+	  	<label class="boundsLabel">X:</label><input id="boundsX" class="boundsInput" style="width:17%" type="text" required>
+	  	<label class="boundsLabel">Y:</label><input id="boundsY" class="boundsInput" style="width:17%" type="text" required>
+	  	<label class="boundsLabel">W:</label><input id="boundsW" class="boundsInput" style="width:17%" type="text" required>
+	  	<label class="boundsLabel">H:</label><input id="boundsH" class="boundsInput" style="width:17%" type="text" required>
 	  	<br>
 	  </div>
 	  <br>
@@ -78,7 +78,7 @@
 	  <div id="addVisualTextBox">
 	  	<label><b>Text</b></label>
 	  	<br>
-	  	<input type="text" required>
+	  	<input id="textBoxText" type="text" required>
 	  	<br>
 	  	<label><b>Font</b></label>
 	  	<br>
@@ -98,7 +98,7 @@
 	  <br>
       <div class="clearfix">
         <button type="button" onclick="resetAddVisualForm()" class="cancelbtn">Cancel</button>
-        <button type="submit" onclick="JavaScript:handleAddVisualFormClick(this)" class="signupbtn">Add</button>
+        <button type="button" onclick="JavaScript:handleAddVisualFormClick(this)" class="signupbtn">Add</button>
       </div>
     </div>
   	</form>

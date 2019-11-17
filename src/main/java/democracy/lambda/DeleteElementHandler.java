@@ -45,8 +45,10 @@ public class DeleteElementHandler implements RequestStreamHandler {
 		VisualElementResponse result;
 		
 		// extract body from incoming HTTP POST request. If any error, then return 422 error
-		String body;
+		String path;
+		int elementId = -1;
 		boolean inputProcessingFailed = false;
+		
 		try 
 		{
 			BufferedReader reader = new BufferedReader(new InputStreamReader(input));
@@ -54,10 +56,13 @@ public class DeleteElementHandler implements RequestStreamHandler {
 			JSONObject event = (JSONObject) parser.parse(reader);
 			logger.log("event:" + event.toJSONString());
 			
-			body = (String)event.get("body");
-			if (body == null) 
+			path = (String) ((JSONObject) event.get("pathParameters")).get("elementId"); // always check the cloudwatch log
+			logger.log("Path=" + path);
+			elementId = Integer.parseInt(path);
+			
+			if (path == null) 
 			{
-				body = event.toJSONString();  // this is only here to make testing easier
+				path = event.toJSONString();  // this is only here to make testing easier
 			}
 		}
 		catch (ParseException pe) 
@@ -66,22 +71,18 @@ public class DeleteElementHandler implements RequestStreamHandler {
 				response = new RequestResponse(442, "Unable to process input");  // unable to process input
 				responseJson.put("body", new Gson().toJson(response));
 				inputProcessingFailed = true;
-				body = null;
+				path = null;
 		}
 
 		if(!inputProcessingFailed) 
 		{
-			DeleteElementRequest req = new Gson().fromJson(body, DeleteElementRequest.class);
-			logger.log(req.toString());
-			
-
 			try 
 			{	
 				// Get the element
 				ElementDAO dao = new ElementDAO();
-				VisualElement element = dao.getTextbox(req.elementId);
+				VisualElement element = dao.getTextbox(elementId);
 				int cardId = element.getCardId();
-				
+
 				// Delete the element
 				if (dao.deleteVisualElement(element)) 
 				{

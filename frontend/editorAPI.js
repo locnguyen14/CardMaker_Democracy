@@ -3,8 +3,8 @@ var htmlBaseUrl = "https://cs509-democracy.s3.amazonaws.com/";
 
 var retrieveCardUrl 	= apiBaseUrl + "main/retrieve";
 var retrieveImagesUrl 	= apiBaseUrl + "main/list/images";
-var addTextBoxUrl		= apiBaseUrl + "edit";
-var deleteVisualUrl		= apiBaseUrl + "";
+var addTextBoxUrl		= apiBaseUrl + "editor/newtextbox";
+var deleteVisualUrl		= apiBaseUrl + "editor/delete";
 
 var layoutId = null;
 var faceNumberToFaceId = [];
@@ -47,7 +47,7 @@ function API_retrieveCard()
 			}
 			else
 			{
-				alert(requestResponse["errorString"]);
+				alert(requestResponse["errorMessage"]);
 			}
 		}
 	}
@@ -318,9 +318,105 @@ function resetAddVisualForm()
 	document.getElementById("addVisualForm").reset();
 }
 
+function parseRequestResponse(xhrResponseText)
+{
+	var xhrResponse = JSON.parse(xhrResponseText);
+	var body = JSON.parse(xhrResponse["body"]);
+	
+	var statusCode = body["statusCode"];
+	var errorMessage = "";
+	var response = null;
+	
+	if (statusCode == 200)
+	{
+		response = body["response"];
+	} 
+	else
+	{
+		errorMessage = body["errorMessage"];
+	}
+	
+	return [statusCode, errorMessage, response];
+}
+
 function handleAddVisualFormClick(event)
 {
 	// Validate that the fields are properly filled out
+	var x = document.getElementById("boundsX").value;
+	var y = document.getElementById("boundsY").value;
+	var w = document.getElementById("boundsW").value;
+	var h = document.getElementById("boundsH").value;
+	
+	if (x == "" || y == "" || w == "" || h == "")
+	{
+		return;
+	}
+	
+	
+	var visualTypes = document.getElementsByName("visualType"); 
+	var selection = "";
+     
+	for(var i = 0; i < visualTypes.length; i++) 
+	{ 
+		if(visualTypes[i].checked) 
+        {
+			selection = visualTypes[i].value;
+        }
+    } 
+	
+	if (selection == "textbox")
+	{
+		// We are creating a textbox
+		var text = document.getElementById("textBoxText").value;
+		if (text == "") { return; }
+		
+		var fontSelect = document.getElementById("fontChoice");
+		var fontId = fontSelect.options[fontSelect.selectedIndex].value;
+		
+		var data = {};
+		data["cardId"] = editorCardId.toString();
+		data["faceId"] = faceNumberToFaceId[currFaceIndex].toString();
+		data["text"] = text;
+		data["fontId"] = fontId.toString();
+		data["x"] = x;
+		data["y"] = y;
+		data["width"] = w;
+		data["height"] = h;
+		
+		var jsonString = JSON.stringify(data);
+		console.log(jsonString);
+		
+		// Send request
+		var xhr = new XMLHttpRequest();
+		xhr.open("POST", addTextBoxUrl, true);
+		xhr.send(jsonString);
+		console.log("API - CREATE TEXTBOX: Sent request");
+		xhr.onloadend = function ()
+		{
+			if (xhr.readyState == XMLHttpRequest.DONE)
+			{
+				console.log("API - CREATE TEXTBOX: Received response");
+			    console.log(xhr.responseText);
+			    var requestResponse = parseRequestResponse(xhr.responseText);
+			    if (requestResponse[0] == 200)
+			    {	
+			    	API_parseVisualElementResponse(requestResponse[2]);
+					API_handleVisualElementResponse();
+					refreshCardFacePanel();
+					
+					resetAddVisualForm();
+			    }
+			    else
+			    {
+			    	alert(requestResponse[1]);
+			    }
+			}
+			else
+			{
+				console.log("Error during xhr");
+			}
+		}
+	}
 }
 
 function handleDeleteVisualClick()
@@ -360,7 +456,7 @@ function processDeleteVisual(visualId)
 			}
 			else
 			{
-				alert(requestResponse["errorString"]);
+				alert(requestResponse["errorMessage"]);
 			}
 		}
 	}

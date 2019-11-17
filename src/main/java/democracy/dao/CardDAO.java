@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import democracy.model.Card;
+import democracy.model.VisualElement;
 
 public class CardDAO 
 {
@@ -50,6 +51,29 @@ public class CardDAO
 	{
 		try 
 		{
+			ElementDAO dao = new ElementDAO();
+			List<VisualElement> images = dao.getAllImages(card.getId());
+			List<VisualElement> textboxes = dao.getAllTextboxes(card.getId());
+			
+			// Delete all the image
+			for (VisualElement image : images) 
+			{
+				if (dao.deleteVisualElement(image)) 
+				{
+					continue;
+				}
+			}
+			
+			// Delete all the text boxes
+			for (VisualElement textbox : textboxes) 
+			{
+				if (dao.deleteVisualElement(textbox)) 
+				{
+					continue;
+				}
+			}
+			
+			// Delete the card
 			PreparedStatement ps = conn.prepareStatement("DELETE FROM CARDS WHERE CARDID = ?;");
 			ps.setInt(1, card.getId());	
 			int numAffected = ps.executeUpdate();
