@@ -25,17 +25,20 @@ public class CardDAO
 		}
 	}
 	
-	public boolean addCard(Card card) throws Exception
+	public int addCard(Card card) throws Exception
 	{
 		try
 		{
-			PreparedStatement ps = conn.prepareStatement("INSERT INTO CARDS (EVENTTYPEID, RECIPIENT_NAME, LAYOUTID) VALUES (?,?,?);");
+			PreparedStatement ps = conn.prepareStatement("INSERT INTO CARDS (EVENTTYPEID, RECIPIENT_NAME, LAYOUTID) VALUES (?,?,?);", PreparedStatement.RETURN_GENERATED_KEYS);
 			ps.setInt(1, card.getEventId());
 			ps.setString(2, card.getRecipientName());
 			ps.setInt(3, card.getLayoutId());
-			ps.execute();
-			
-			return true;
+			ps.executeUpdate();
+			ResultSet rs = ps.getGeneratedKeys();
+			if (rs.next()) {
+				return rs.getInt(1);
+			}
+			return -1;
 		}
 		catch (Exception e)
 		{

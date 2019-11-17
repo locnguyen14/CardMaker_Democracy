@@ -12,6 +12,7 @@ import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.google.gson.Gson;
 
 import democracy.dao.CardDAO;
+import democracy.dao.ElementDAO;
 import democracy.dao.EventDAO;
 import democracy.dao.LayoutDAO;
 import democracy.http.ChangeCardListResponse;
@@ -49,8 +50,13 @@ public class CreateCardHandler implements RequestStreamHandler
 		}
 		if (valideventid && validlayoutid) {
 			Card card = new Card(0, eventid, recipient, layoutid);
-			VisualElement element = new VisualElement(0, cardId, 4, 7, "BackPage", 1);
-			return dao.addCard(card);
+			int cardId = dao.addCard(card);
+			if (cardId > 0) {
+				VisualElement element = new VisualElement(0, cardId, 4, 8, "BackPage", 1);
+				ElementDAO elementdao = new ElementDAO();
+				elementdao.addTextbox(element);
+				return true;
+			}
 		}
 		return false;
 	}
