@@ -1,12 +1,14 @@
 package democracy.dao;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 import democracy.model.Face;
+import democracy.model.Layout;
 
 public class FaceDAO 
 {
@@ -21,6 +23,32 @@ public class FaceDAO
 		catch (Exception e) 
 		{
 			conn = null;
+		}
+	}
+	
+	public Face getFace(int faceId) throws Exception
+	{
+		try
+		{
+			Face face = null;
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM FACES WHERE FACEID = ?;");
+			ps.setInt(1, faceId);
+			ResultSet resultSet = ps.executeQuery();
+			
+			while (resultSet.next())
+			{
+				face = generateFace(resultSet);
+			}
+			
+			resultSet.close();
+			ps.close();
+			
+			return face;
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			throw new Exception("Failed to retrieve face: " + e.getMessage());
 		}
 	}
 	
