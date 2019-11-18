@@ -60,16 +60,17 @@ public class NewTextBoxHandler implements RequestStreamHandler{
 		String layout = cardLayout.getLayout().replaceAll("[^a-zA-Z0-9]", "");
 		int maxWidth = 600;
 		int maxHeight = 600;
-		if (!face.getFaceName().equals("Back"))
+		if (face.getFaceName().equals("Back"))
 		{
-			if (layout.equals("Portrait"))
-			{
-				maxHeight = 800;
-			}
-			else if (layout.equals("Landscape"))
-			{
-				maxWidth = 800;
-			}
+			throw new Exception("Back face is immutable.");
+		}
+		else if (layout.equals("Portrait"))
+		{
+			maxHeight = 800;
+		}
+		else if (layout.equals("Landscape"))
+		{
+			maxWidth = 800;
 		}
 			
 		if (x + width > maxWidth) { throw new Exception("Textbox will not fit on page in x direction."); }
