@@ -80,7 +80,8 @@ public class DeleteElementHandler implements RequestStreamHandler {
 			{	
 				// Get the element. In this case, either  getTextBox or getImage works.
 				ElementDAO dao = new ElementDAO();
-				VisualElement element = dao.getTextbox(elementId);
+				//VisualElement element = dao.getTextbox(elementId);
+				VisualElement element = dao.getVisualElement(elementId);
 				int cardId = element.getCardId();
 
 				// Delete the element

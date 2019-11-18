@@ -89,6 +89,38 @@ public class ElementDAO {
 		}
 	}
 	
+	public VisualElement getVisualElement(int elementId) throws Exception
+	{
+		try
+		{
+			VisualElement element = null;
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM ELEMENTS WHERE ELEMENTID = ?;");
+			ps.setInt(1, elementId);
+			ResultSet resultSet = ps.executeQuery();
+			
+			while (resultSet.next())
+			{
+				if (resultSet.getObject("FONTID") == null) 
+				{
+					element = generateImage(resultSet);
+				}
+				else {
+					element = generateTextbox(resultSet);
+				}
+			}
+			
+			resultSet.close();
+			ps.close();
+			
+			return element;
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			throw new Exception("Failed to retrieve textbox: " + e.getMessage());
+		}
+	}
+	
 	public VisualElement getTextbox(int elementId) throws Exception
 	{
 		try
