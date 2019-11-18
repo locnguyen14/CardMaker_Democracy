@@ -46,7 +46,7 @@ public class NewTextBoxHandler implements RequestStreamHandler{
 		ElementDAO dao = new ElementDAO();
 		
 		if (x < 0 || y < 0) { throw new Exception("X and Y parameters may not be negative."); }
-		if (width < 0 || height < 0) { throw new Exception("W and H parameters may not be negative."); }
+		if (width <= 0 || height <= 0) { throw new Exception("W and H parameters may not be negative."); }
 		
 		Card card = new CardDAO().getCard(cardId);
 		if (card == null) { throw new Exception("Invalid card ID"); }
@@ -57,18 +57,18 @@ public class NewTextBoxHandler implements RequestStreamHandler{
 		Face face = new FaceDAO().getFace(faceId);
 		if (face == null) { throw new Exception("Invalid face ID"); }
 		
-		String layout = cardLayout.getLayout();
+		String layout = cardLayout.getLayout().replaceAll("[^a-zA-Z0-9]", "");
 		int maxWidth = 600;
 		int maxHeight = 600;
-		if (face.getFaceName() != "Back")
+		if (!face.getFaceName().equals("Back"))
 		{
-			if (layout == "Portrait")
+			if (layout.equals("Portrait"))
 			{
-				maxHeight = 600;
+				maxHeight = 800;
 			}
-			else if (layout == "Landscape")
+			else if (layout.equals("Landscape"))
 			{
-				maxWidth = 600;
+				maxWidth = 800;
 			}
 		}
 			
