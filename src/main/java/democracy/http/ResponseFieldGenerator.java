@@ -65,4 +65,11 @@ public class ResponseFieldGenerator
 	public static GenerateUrlResponse getGenerateUrlResponse(int cardId) {
 		return new GenerateUrlResponse("https://cs509-democracy.s3.amazonaws.com/view.html?cardId="+ cardId);
 	}
+	
+	public static ListImageResponse getListImageResponse() throws Exception
+	{
+		List<VisualElement> images;
+		images = new ElementDAO().listAllImage();
+		return new ListImageResponse(images.toArray(new VisualElement[0]));
+	}
 }
