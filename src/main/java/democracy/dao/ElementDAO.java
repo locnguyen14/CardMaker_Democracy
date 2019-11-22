@@ -26,32 +26,6 @@ public class ElementDAO {
 		
 	}
 	
-	public List<VisualElement> listAllImage() throws Exception{
-		List<VisualElement> allImages = new ArrayList<VisualElement>();
-		try 
-		{
-			Statement statement = conn.createStatement();
-			String query = "SELECT * FROM ELEMENTS WHERE FONTID IS NULL";
-			ResultSet resultSet = statement.executeQuery(query);
-			
-			while (resultSet.next())
-			{
-				VisualElement element = generateImage(resultSet);
-				allImages.add(element);
-			}
-			
-			resultSet.close();
-			statement.close();
-			
-			return allImages;
-		} 
-		catch (Exception e) 
-		{
-			throw new Exception("Failed to list all images in S3: " + e.getMessage());
-		}
-	}
-	
-	
 	public boolean addImage(VisualElement element) throws Exception{
 		try 
 		{
