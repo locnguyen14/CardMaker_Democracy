@@ -66,7 +66,7 @@ public class ListImageHandler implements RequestStreamHandler {
         	}
         	else 
         	{
-        		String imageURL = key.replace("images/", "");
+        		String imageURL = "https://cs509-democracy.s3.amazonaws.com/" + key;
             	imageS3URL.add(imageURL);
         	}
 
