@@ -11,6 +11,7 @@ import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.google.gson.Gson;
 
+import democracy.dao.BoundDAO;
 import democracy.dao.CardDAO;
 import democracy.dao.ElementDAO;
 import democracy.dao.EventDAO;
@@ -19,6 +20,7 @@ import democracy.http.ChangeCardListResponse;
 import democracy.http.CreateCardRequest;
 import democracy.http.RequestResponse;
 import democracy.http.ResponseFieldGenerator;
+import democracy.model.Bounds;
 import democracy.model.Card;
 import democracy.model.Event;
 import democracy.model.Layout;
@@ -52,7 +54,10 @@ public class CreateCardHandler implements RequestStreamHandler
 			Card card = new Card(0, eventid, recipient, layoutid);
 			int cardId = dao.addCard(card);
 			if (cardId > 0) {
-				VisualElement element = new VisualElement(0, cardId, 4, 8, "BackPage", 1);
+				BoundDAO bounddao  = new BoundDAO();
+				Bounds bounds  = new Bounds(0, 150, 225, 300, 150);
+				int boundId = bounddao.addBound(bounds);
+				VisualElement element = new VisualElement(0, cardId, 4, boundId, "BackPage", 1);
 				ElementDAO elementdao = new ElementDAO();
 				elementdao.addTextbox(element);
 				return true;
