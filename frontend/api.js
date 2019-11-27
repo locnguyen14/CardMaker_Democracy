@@ -219,7 +219,7 @@ function handleDuplicateCardClick()
 	if (selectedCardId == null) { alert("Please select a card to duplicate."); return; }
 	
 	var xhr = new XMLHttpRequest();
-	var duplicateCardUrl = `${dupCardUrl}/${cardId}`
+	var duplicateCardUrl = `${dupCardUrl}/${selectedCardId}`
 	xhr.open("GET", duplicateCardUrl, true);
 	xhr.send();
 	console.log("API - DUPLICATE_CARD: Sent request.");
