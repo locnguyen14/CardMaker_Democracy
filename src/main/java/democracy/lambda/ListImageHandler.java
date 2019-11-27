@@ -40,19 +40,27 @@ public class ListImageHandler implements RequestStreamHandler {
 
     private AmazonS3 s3 = null;
 
-    // Return a list of base64 encoded string for each image in S3
-    List<String> getImagesFromBucket(String filename) throws Exception
+    // Return a list of object/image URL in S3
+    List<String> getImagesFromBucket() throws Exception
     {
         if(s3 == null)
         {
             s3 = AmazonS3ClientBuilder.standard().withRegion(Regions.US_EAST_1).build();
         }
 
-        // List all the objects within the buckets
-        ObjectListing result;
-        result = s3.listObjects(filename);
- 
+        System.out.println("Listing objects");
+        
+//        // List all the objects within the buckets
+//        ObjectListing result;
+//        result = s3.listObjects(filename);
+        ListObjectsV2Request req = new ListObjectsV2Request().withBucketName("cs509-democracy/").withPrefix("images/");
+        ListObjectsV2Result result;
+        result = s3.listObjectsV2(req);
+        
+        
         List<String> imageS3URL = new ArrayList<String>();
+        System.out.println("Finish Listing");
+        
         for (S3ObjectSummary objectSummary : result.getObjectSummaries()) 
         {
         	String imageURL = "https://cs509-democracy.s3.amazonaws.com/" + objectSummary.getKey();
@@ -63,30 +71,9 @@ public class ListImageHandler implements RequestStreamHandler {
 
     }
     
-//    // Encode an image to base64 
-//    String encodeBase64URL(BufferedImage imgBuf) throws IOException
-//    {
-//    	String base64;
-//		if (imgBuf == null) 
-//		{
-//			base64 = null;
-//		}
-//		else 
-//		{
-//			Base64 encoder = new Base64();
-//			ByteArrayOutputStream out = new ByteArrayOutputStream();
-//			ImageIO.write(imgBuf, "png", out);
-//			byte[] bytes = out.toByteArray();
-//			base64 = "data:image/png;base64," + new String(encoder.encode(bytes), "UTF-8");
-//		}
-//		
-//		return base64;
-//	}
-
-
     LambdaLogger logger;
     
-    @SuppressWarnings("unchecked")
+   
 	@Override
     public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
     	
@@ -107,8 +94,8 @@ public class ListImageHandler implements RequestStreamHandler {
 		
 		try 
 		{
-			String filename = "cs509-democracy/images";
-			List<String> imageS3URL = getImagesFromBucket(filename);
+			System.out.println("Inside Handler");
+			List<String> imageS3URL = getImagesFromBucket();
 			result = ResponseFieldGenerator.getListImageResponse(imageS3URL);
 			response = new RequestResponse(200, result);
 		}
