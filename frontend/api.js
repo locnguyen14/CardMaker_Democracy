@@ -3,6 +3,7 @@ var htmlBaseUrl = "https://cs509-democracy.s3.amazonaws.com/";
 
 var listCardsUrl	= baseUrl + "main/list/cards";   // GET
 var deleteCardUrl	= baseUrl + "main/delete";
+var dupCardUrl 		= baseUrl + "main/duplicate"; 
 var createCardUrl 	= baseUrl + "main/create";
 var generateCardUrl = baseUrl + "main/generateUrl";
 
@@ -204,6 +205,39 @@ function handleCreateCardClick(e)
 		    else
 		    {
 		    	alert(requestResponse[1]);
+		    }
+		}
+		else
+		{
+			console.log("Error during xhr");
+		}
+	}
+}
+
+function handleDuplicateCardClick()
+{
+	if (selectedCardId == null) { alert("Please select a card to duplicate."); return; }
+	
+	var xhr = new XMLHttpRequest();
+	var duplicateCardUrl = `${dupCardUrl}/${selectedCardId}`
+	xhr.open("GET", duplicateCardUrl, true);
+	xhr.send();
+	console.log("API - DUPLICATE_CARD: Sent request.");
+	xhr.onloadend = function ()
+	{
+		if (xhr.readyState == XMLHttpRequest.DONE)
+		{
+			console.log("API - DUPLICATE_CARD: Received response.");
+			console.log(xhr.responseText);
+		    var requestResponse = JSON.parse(xhr.responseText)["response"];
+		    if (requestResponse != null)
+		    {
+		    	updateCardList(requestResponse);
+		    	selectedCardId = null;
+		    }
+		    else
+		    {
+		    	alert("Error no card existed anymore ");
 		    }
 		}
 		else

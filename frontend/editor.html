@@ -22,6 +22,7 @@
 			if (editorCardId == null)
 			{
 				console.log("No ID found in session storage.");
+				window.location.replace(htmlBaseUrl + "index.html");
 			}
 			else 
 			{
@@ -52,7 +53,7 @@
 		<div class="sideDiv" style="border:1px solid black;">
 			<h3>Tools</h3>
 			<button onclick="displayAddVisualForm()" style="width:80%">Add Element</button>
-			<button style="width:80%">Edit Element</button>
+			<button onclick="displayEditVisualForm()" style="width:80%">Edit Element</button>
 			<button onclick="handleDeleteVisualClick()" style="width:80%">Delete Element</button>
 		</div>
 	</div>
@@ -92,7 +93,9 @@
 	      <select id="imageChoice">
 	  	  </select>
 	  	  <label><b>Or Upload Your Own</b></label><br>
-	  	  <input type="file" name="uploadImage"/>
+	  	  <input id="imageUpload" type="file" name="uploadImage" onchange="readImageFile()"/><br>
+	  	  <label><b>If uploading, please give the new image a name:</b></label>
+	  	  <input id="imageUploadName" type="text" style="width:30%"/>
 	  </div>
             
 	  <br>
@@ -103,6 +106,61 @@
     </div>
   	</form>
 	</div>
+	
+	<!-- POP UP FOR EDITING IMAGES -->
+	<div id="editImage" class="modal">
+  	<form id = "editImageForm" class="modal-content animate">
+   	<div class="container">
+   		<div>
+	  	<label><b>Bounds</b></label><br>
+	  	<label class="boundsLabel">X:</label><input id="boundsXEditImage" class="boundsInput" style="width:17%" type="text" required>
+	  	<label class="boundsLabel">Y:</label><input id="boundsYEditImage" class="boundsInput" style="width:17%" type="text" required>
+	  	<label class="boundsLabel">W:</label><input id="boundsWEditImage" class="boundsInput" style="width:17%" type="text" required>
+	  	<label class="boundsLabel">H:</label><input id="boundsHEditImage" class="boundsInput" style="width:17%" type="text" required>
+	  	<br>
+	  </div>
+	  <br>
+	  <div class="clearfix">
+        <button type="button" onclick="resetEditImageForm()" class="cancelbtn">Cancel</button>
+        <button type="button" onclick="JavaScript:handleEditImageFormClick(this)" class="signupbtn">Add</button>
+      </div>
+   	</div>
+   	</form>
+   	</div>
+   	
+   	<!-- POP UP FOR EDITING TEXTBOX -->
+   	<div id="editTextBox" class="modal">
+  	<form id = "editTextBoxForm" class="modal-content animate">
+   	<div class="container">
+   	
+   	<div>
+	  	<label><b>Bounds</b></label><br>
+	  	<label class="boundsLabel">X:</label><input id="boundsXEditTextBox" class="boundsInput" style="width:17%" type="text" required>
+	  	<label class="boundsLabel">Y:</label><input id="boundsYEditTextBox" class="boundsInput" style="width:17%" type="text" required>
+	  	<label class="boundsLabel">W:</label><input id="boundsWEditTextBox" class="boundsInput" style="width:17%" type="text" required>
+	  	<label class="boundsLabel">H:</label><input id="boundsHEditTextBox" class="boundsInput" style="width:17%" type="text" required>
+	  	<br>
+	</div>
+	<br>
+	  
+	<label><b>Text</b></label>
+  	<br>
+  	<input id="textBoxTextEditTextBox" type="text" required>
+  	<br>
+  	<label><b>Font</b></label>
+  	<br>
+  	<select id="fontChoiceEditTextBox">
+  	</select>
+  	
+  	<br>
+  	<div class="clearfix">
+        <button type="button" onclick="resetEditTextBoxForm()" class="cancelbtn">Cancel</button>
+        <button type="button" onclick="JavaScript:handleEditTextBoxFormClick(this)" class="signupbtn">Edit</button>
+    </div>
+  	
+   	</div>
+   	</form>
+   	</div>
 	
 	<div id="bottomDiv">
 		

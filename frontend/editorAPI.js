@@ -4,6 +4,7 @@ var htmlBaseUrl = "https://cs509-democracy.s3.amazonaws.com/";
 var retrieveCardUrl 	= apiBaseUrl + "main/retrieve";
 var retrieveImagesUrl 	= apiBaseUrl + "main/list/images";
 var addTextBoxUrl		= apiBaseUrl + "editor/newtextbox";
+var addImageUrl			= apiBaseUrl + "editor/newimage";
 var deleteVisualUrl		= apiBaseUrl + "editor/delete";
 
 var layoutId = null;
@@ -90,6 +91,7 @@ function API_parseVisualElementResponse(response)
 	
 	// Insert fonts into font selection of createTable
 	var fontSelectList = document.getElementById("fontChoice");
+	var fontSelectList2 = document.getElementById("fontChoiceEditTextBox");
 	clearSelectList(fontSelectList);
 	var fontSelectOutput = ""
 	for (let [fontId, font] of Object.entries(fonts))
@@ -97,6 +99,7 @@ function API_parseVisualElementResponse(response)
 		fontSelectOutput += "<option value=\"" + fontId + "\">" + font.name + ", " + font.style + "</option>";
 	}
 	fontSelectList.innerHTML = fontSelectOutput;
+	fontSelectList2.innerHTML = fontSelectOutput;
 	
 	var textboxes = response["textboxes"];
 	for (var i = 0; i < textboxes.length; i++)
@@ -314,8 +317,78 @@ function changeAddVisualFormView()
 
 function resetAddVisualForm()
 {
-	document.getElementById('addVisual').style.display='none';
+	document.getElementById('addVisual').style.display = 'none';
 	document.getElementById("addVisualForm").reset();
+	imageBase64 = null;
+}
+
+function displayEditVisualForm()
+{
+	if (selectedVisualId == null) { alert("Please select a visual element first."); return; }
+	
+	var faceId = faceNumberToFaceId[currFaceIndex];
+	var visualElements = faceIdToVisualElements[faceId];	
+	var selectedElement = null;
+	for (var i = 0; i < visualElements.length; i++)
+	{
+		if (visualElements[i].id == selectedVisualId)
+		{
+			selectedElement = visualElements[i];
+			break;
+		}
+	}
+	if (selectedElement == null)
+	{
+		alert("Front-end is not synchronized with database."); return;
+	}
+	
+	console.log(selectedElement);
+	
+	// If the selected element is a textbox, fill and present the Edit Textbox form
+	if (selectedElement.hasOwnProperty('fontId'))
+	{
+		document.getElementById('textBoxTextEditTextBox').value = selectedElement.content;
+		document.getElementById('boundsXEditTextBox').value = selectedElement.x;
+		document.getElementById('boundsYEditTextBox').value = selectedElement.y;
+		document.getElementById('boundsWEditTextBox').value = selectedElement.w;
+		document.getElementById('boundsHEditTextBox').value = selectedElement.h;
+		
+		var selectedFont = document.getElementById("fontChoiceEditTextBox");
+	    selectedFont.value = selectedElement.fontId.toString();
+		
+		document.getElementById('editTextBox').style.display = 'block';
+	}
+	else
+	{
+		document.getElementById('boundsXEditImage').value = selectedElement.x;
+		document.getElementById('boundsYEditImage').value = selectedElement.y;
+		document.getElementById('boundsWEditImage').value = selectedElement.w;
+		document.getElementById('boundsHEditImage').value = selectedElement.h;
+		
+		document.getElementById('editImage').style.display = 'block';
+	}
+}
+
+function handleEditImageFormClick(event)
+{
+	console.log("handleEditImageFormClick");
+}
+	
+function resetEditImageForm()
+{
+	document.getElementById('editImage').style.display = 'none';
+	document.getElementById('editImageForm').reset();
+}
+
+function handleEditTextBoxFormClick(event)
+{
+	console.log("handleEditTextBoxFormClick");
+}
+
+function resetEditTextBoxForm()
+{
+	document.getElementById('editTextBox').style.display = 'none';
+	document.getElementById('editTextBoxForm').reset();
 }
 
 function parseRequestResponse(xhrResponseText)
@@ -339,6 +412,46 @@ function parseRequestResponse(xhrResponseText)
 	return [statusCode, errorMessage, response];
 }
 
+var imageBase64 = null;
+
+function readImageFile()
+{
+	var acceptedExtensions = [".png", ".jpg", ".jpeg"];
+	
+	var fileUpload = document.getElementById("imageUpload");
+	
+	if (fileUpload.files && fileUpload.files[0]) 
+	{    
+		var fileName = fileUpload.files[0].name;
+		var acceptable = false;
+		for (var i = 0; i < acceptedExtensions.length; i++)
+		{
+			if (fileName.endsWith(acceptedExtensions[i]))
+			{
+				acceptable = true;
+				break;
+			}	
+		}
+		if (!acceptable) 
+		{ 
+			alert("Acceptable file extensions are: .jpg, .jpeg, .png."); 
+			fileUpload.value = null; 
+			return;
+		}
+		
+		// Load file into memory
+		var reader = new FileReader();
+	    reader.addEventListener("load", function(e) 
+	    {
+	    	// e.target.result is of the form "data:img/png;base64,STARTDATAHERE"
+	    	var idx = e.target.result.indexOf("base64,");
+	    	imageBase64 = e.target.result.substring(idx + 7);
+	    	console.log(imageBase64);
+	    }); 
+	    reader.readAsDataURL(fileUpload.files[0]);
+    }
+}
+
 function handleAddVisualFormClick(event)
 {
 	// Validate that the fields are properly filled out
@@ -351,7 +464,6 @@ function handleAddVisualFormClick(event)
 	{
 		return;
 	}
-	
 	
 	var visualTypes = document.getElementsByName("visualType"); 
 	var selection = "";
@@ -385,7 +497,7 @@ function handleAddVisualFormClick(event)
 		
 		var jsonString = JSON.stringify(data);
 		console.log(jsonString);
-		
+	
 		// Send request
 		var xhr = new XMLHttpRequest();
 		xhr.open("POST", addTextBoxUrl, true);
@@ -414,6 +526,48 @@ function handleAddVisualFormClick(event)
 			else
 			{
 				console.log("Error during xhr");
+			}
+		}
+	}
+	else if (selection == "image")
+	{	
+		var data = {};
+		data["cardId"] = editorCardId.toString();
+		data["faceId"] = faceNumberToFaceId[currFaceIndex].toString();
+		
+		if (imageBase64 != null)
+		{
+			var newImageName = document.getElementById("imageUploadName").value;
+			if (!newImageName)
+			{
+				alert("Please provide a name for the image to upload.");
+				return;
+			}
+			data["imageName"] = newImageName;
+			data["image"] = imageBase64;
+		}
+		else 
+		{
+			// Get data["image"] as selection from select input
+			data["imageName"] = "";
+		}
+		
+		console.log(data);
+		return;
+		
+		var jsonString = JSON.stringify(data);
+		console.log(jsonString);
+	
+		// Send request
+		var xhr = new XMLHttpRequest();
+		xhr.open("POST", addImageUrl, true);
+		xhr.send(jsonString);
+		console.log("API - CREATE IMAGE: Sent request");
+		xhr.onloadend = function ()
+		{
+			if (xhr.readyState == XMLHttpRequest.DONE)
+			{
+
 			}
 		}
 	}
