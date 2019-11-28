@@ -2,7 +2,7 @@ var apiBaseUrl = "https://yvmlvrpr1m.execute-api.us-east-1.amazonaws.com/alpha/"
 var htmlBaseUrl = "https://cs509-democracy.s3.amazonaws.com/";
 
 var retrieveCardUrl 	= apiBaseUrl + "main/retrieve";
-var retrieveImagesUrl 	= apiBaseUrl + "main/list/images";
+var retrieveImagesUrl 	= apiBaseUrl + "editor/list/images";
 var addTextBoxUrl		= apiBaseUrl + "editor/newtextbox";
 var addImageUrl			= apiBaseUrl + "editor/newimage";
 var deleteVisualUrl		= apiBaseUrl + "editor/delete";
@@ -271,7 +271,6 @@ function clearSelectList(selectList)
 function displayAddVisualForm()
 {
 	document.getElementById('addVisual').style.display='block';
-	return;
 	
 	var xhr = new XMLHttpRequest();
 	xhr.open("GET", retrieveImagesUrl, true);
