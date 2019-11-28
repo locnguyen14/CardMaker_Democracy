@@ -66,4 +66,7 @@ public class ResponseFieldGenerator
 		return new GenerateUrlResponse("https://cs509-democracy.s3.amazonaws.com/view.html?cardId="+ cardId);
 	}
 	
+	public static ListImageResponse getListImageResponse(List<String> imageS3URL) {
+		return new ListImageResponse(imageS3URL.toArray(new String[0]));
+	}
 }
