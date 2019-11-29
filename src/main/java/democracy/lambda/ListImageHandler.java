@@ -52,7 +52,7 @@ public class ListImageHandler implements RequestStreamHandler {
         
         // List all the objects within the buckets
         ObjectListing result;
-        result = s3.listObjects("cs509-democracy", "images/");
+        result = s3.listObjects("cs509-democracy", S3Util.getFolderName());
  
         System.out.println("Finish Listing");
         

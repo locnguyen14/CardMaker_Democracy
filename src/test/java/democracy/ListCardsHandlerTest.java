@@ -13,6 +13,7 @@ import com.amazonaws.util.json.Jackson;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import democracy.lambda.ListCardHandler;
+import democracy.lambda.S3Util;
 
 public class ListCardsHandlerTest extends LambdaTest 
 {

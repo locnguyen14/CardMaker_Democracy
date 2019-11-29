@@ -22,6 +22,16 @@ public class DatabaseUtil
 	{
 		if (conn != null) { return conn; }
 		
+		String dbName = "innodb";
+		
+		// Get an alternative database name if performing JUnit testing
+		String testing = System.getenv("TESTING");
+		if (testing != null && testing.equals("1")) 
+		{ 
+			System.out.println("Using test database.");
+			dbName = "test_innodb"; 
+		}
+		
 		try 
 		{
 			// Connect to database using predefined values

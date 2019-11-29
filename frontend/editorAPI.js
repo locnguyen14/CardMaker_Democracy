@@ -281,8 +281,27 @@ function displayAddVisualForm()
 		if (xhr.readyState == XMLHttpRequest.DONE)
 		{
 			console.log("API - RETRIEVE_CARD: Received response");
-			console.log(xhr.responseText);
-			//var requestResponse = JSON.parse();
+			var requestResponse = parseRequestResponse(xhr.responseText);
+			
+			if (requestResponse[0] == 200)
+			{
+				var imageUrls = requestResponse[2]["imageS3URL"];
+				
+				var imageChoice = document.getElementById("imageChoice");
+				var imageChoiceOutput = "";
+				for (var i = 0; i < imageUrls.length; i++)
+				{
+					var imageUrl = imageUrls[i];
+					var shortUrl = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+					console.log(shortUrl);
+					imageChoiceOutput += "<option value=\"" + imageUrl + "\">" + shortUrl + "</option>";
+				}
+				imageChoice.innerHTML = imageChoiceOutput;
+			}
+			else 
+			{
+				alert("ERROR: " + requestResponse[1]);
+			}
 		}
 	}
 }
@@ -548,6 +567,8 @@ function handleAddVisualFormClick(event)
 		else 
 		{
 			// Get data["image"] as selection from select input
+			var imageChoice = document.getElementById("imageChoice");
+			data["image"] = imageChoice.options[imageChoice.selectedIndex].value;
 			data["imageName"] = "";
 		}
 		
