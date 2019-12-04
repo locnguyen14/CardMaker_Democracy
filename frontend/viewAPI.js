@@ -46,7 +46,7 @@ function API_retrieveCard()
 			}
 			else
 			{
-				alert(requestResponse["errorString"]);
+				alert(requestResponse["errorMessage"]);
 			}
 		}
 	}
