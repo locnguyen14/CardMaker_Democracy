@@ -50,21 +50,26 @@ public class ListImageHandler implements RequestStreamHandler {
 
         System.out.println("Listing objects");
         
-//        // List all the objects within the buckets
-//        ObjectListing result;
-//        result = s3.listObjects(filename);
-        ListObjectsV2Request req = new ListObjectsV2Request().withBucketName("cs509-democracy/").withPrefix("images/");
-        ListObjectsV2Result result;
-        result = s3.listObjectsV2(req);
-        
-        
-        List<String> imageS3URL = new ArrayList<String>();
+        // List all the objects within the buckets
+        ObjectListing result;
+        result = s3.listObjects("cs509-democracy", S3Util.getFolderName());
+ 
         System.out.println("Finish Listing");
         
+        List<String> imageS3URL = new ArrayList<String>();        
         for (S3ObjectSummary objectSummary : result.getObjectSummaries()) 
         {
-        	String imageURL = "https://cs509-democracy.s3.amazonaws.com/" + objectSummary.getKey();
-        	imageS3URL.add(imageURL);
+        	String key = objectSummary.getKey();
+        	if (key.endsWith("/")) 
+        	{
+        		continue;
+        	}
+        	else 
+        	{
+        		String imageURL = "https://cs509-democracy.s3.amazonaws.com/" + key;
+            	imageS3URL.add(imageURL);
+        	}
+
         }
         
         return imageS3URL;
@@ -96,6 +101,7 @@ public class ListImageHandler implements RequestStreamHandler {
 		{
 			System.out.println("Inside Handler");
 			List<String> imageS3URL = getImagesFromBucket();
+			System.out.println(imageS3URL);
 			result = ResponseFieldGenerator.getListImageResponse(imageS3URL);
 			response = new RequestResponse(200, result);
 		}

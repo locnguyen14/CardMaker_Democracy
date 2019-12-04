@@ -2,7 +2,7 @@ var apiBaseUrl = "https://yvmlvrpr1m.execute-api.us-east-1.amazonaws.com/alpha/"
 var htmlBaseUrl = "https://cs509-democracy.s3.amazonaws.com/";
 
 var retrieveCardUrl 	= apiBaseUrl + "main/retrieve";
-var retrieveImagesUrl 	= apiBaseUrl + "main/list/images";
+var retrieveImagesUrl 	= apiBaseUrl + "editor/list/images";
 var addTextBoxUrl		= apiBaseUrl + "editor/newtextbox";
 var addImageUrl			= apiBaseUrl + "editor/newimage";
 var deleteVisualUrl		= apiBaseUrl + "editor/delete";
@@ -271,7 +271,6 @@ function clearSelectList(selectList)
 function displayAddVisualForm()
 {
 	document.getElementById('addVisual').style.display='block';
-	return;
 	
 	var xhr = new XMLHttpRequest();
 	xhr.open("GET", retrieveImagesUrl, true);
@@ -282,8 +281,27 @@ function displayAddVisualForm()
 		if (xhr.readyState == XMLHttpRequest.DONE)
 		{
 			console.log("API - RETRIEVE_CARD: Received response");
-			console.log(xhr.responseText);
-			//var requestResponse = JSON.parse();
+			var requestResponse = parseRequestResponse(xhr.responseText);
+			
+			if (requestResponse[0] == 200)
+			{
+				var imageUrls = requestResponse[2]["imageS3URL"];
+				
+				var imageChoice = document.getElementById("imageChoice");
+				var imageChoiceOutput = "";
+				for (var i = 0; i < imageUrls.length; i++)
+				{
+					var imageUrl = imageUrls[i];
+					var shortUrl = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+					console.log(shortUrl);
+					imageChoiceOutput += "<option value=\"" + imageUrl + "\">" + shortUrl + "</option>";
+				}
+				imageChoice.innerHTML = imageChoiceOutput;
+			}
+			else 
+			{
+				alert("ERROR: " + requestResponse[1]);
+			}
 		}
 	}
 }
@@ -549,6 +567,8 @@ function handleAddVisualFormClick(event)
 		else 
 		{
 			// Get data["image"] as selection from select input
+			var imageChoice = document.getElementById("imageChoice");
+			data["image"] = imageChoice.options[imageChoice.selectedIndex].value;
 			data["imageName"] = "";
 		}
 		
