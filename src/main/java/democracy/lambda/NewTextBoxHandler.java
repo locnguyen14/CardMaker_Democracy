@@ -21,6 +21,7 @@ import democracy.dao.CardDAO;
 import democracy.dao.ElementDAO;
 import democracy.dao.FaceDAO;
 import democracy.dao.FontDAO;
+import democracy.dao.LayoutDAO;
 import democracy.http.NewTextBoxRequest;
 import democracy.http.RequestResponse;
 import democracy.http.ResponseFieldGenerator;
@@ -29,6 +30,7 @@ import democracy.model.Bounds;
 import democracy.model.Card;
 import democracy.model.Face;
 import democracy.model.Font;
+import democracy.model.Layout;
 import democracy.model.VisualElement;
 
 public class NewTextBoxHandler implements RequestStreamHandler{
@@ -42,6 +44,37 @@ public class NewTextBoxHandler implements RequestStreamHandler{
 			}
 		
 		ElementDAO dao = new ElementDAO();
+		
+		if (x < 0 || y < 0) { throw new Exception("X and Y parameters may not be negative."); }
+		if (width <= 0 || height <= 0) { throw new Exception("W and H parameters may not be negative."); }
+		
+		Card card = new CardDAO().getCard(cardId);
+		if (card == null) { throw new Exception("Invalid card ID"); }
+		
+		Layout cardLayout = new LayoutDAO().getLayoutById(card.getLayoutId());
+		if (cardLayout == null) { throw new Exception("Card has invalid layout ID"); }
+		
+		Face face = new FaceDAO().getFace(faceId);
+		if (face == null) { throw new Exception("Invalid face ID"); }
+		
+		String layout = cardLayout.getLayout().replaceAll("[^a-zA-Z0-9]", "");
+		int maxWidth = 600;
+		int maxHeight = 600;
+		if (face.getFaceName().equals("Back"))
+		{
+			throw new Exception("Back face is immutable.");
+		}
+		else if (layout.equals("Portrait"))
+		{
+			maxHeight = 800;
+		}
+		else if (layout.equals("Landscape"))
+		{
+			maxWidth = 800;
+		}
+			
+		if (x + width > maxWidth) { throw new Exception("Textbox will not fit on page in x direction."); }
+		if (y + height > maxHeight) { throw new Exception("Textbox will not fit on page in y direction"); }
 		
 		// create the bounds and add it to the database
 		BoundDAO bdao = new BoundDAO();

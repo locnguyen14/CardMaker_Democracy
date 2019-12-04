@@ -99,7 +99,7 @@ public class RetrieveCardHandler implements RequestStreamHandler{
 			
 			catch (Exception e)
 			{
-				response = new RequestResponse(403, e.getMessage());
+				response = new RequestResponse(403, "Invalid card ID");
 			}
 		}
 		

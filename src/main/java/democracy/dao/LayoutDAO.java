@@ -1,11 +1,13 @@
 package democracy.dao;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import democracy.model.Card;
 import democracy.model.Layout;
 
 public class LayoutDAO 
@@ -21,6 +23,32 @@ public class LayoutDAO
 		catch (Exception e) 
 		{
 			conn = null;
+		}
+	}
+	
+	public Layout getLayoutById(int layoutId) throws Exception
+	{
+		try
+		{
+			Layout layout = null;
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM LAYOUTS WHERE LAYOUTID = ?;");
+			ps.setInt(1, layoutId);
+			ResultSet resultSet = ps.executeQuery();
+			
+			while (resultSet.next())
+			{
+				layout = generateLayout(resultSet);
+			}
+			
+			resultSet.close();
+			ps.close();
+			
+			return layout;
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			throw new Exception("Failed to retrieve layout: " + e.getMessage());
 		}
 	}
 	

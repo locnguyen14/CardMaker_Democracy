@@ -3,6 +3,7 @@ package democracy.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 //import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -86,6 +87,38 @@ public class ElementDAO {
 		}
 		catch(Exception e) {
 			throw new Exception("Failed to delete image: " + e.getMessage());
+		}
+	}
+	
+	public VisualElement getVisualElement(int elementId) throws Exception
+	{
+		try
+		{
+			VisualElement element = null;
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM ELEMENTS WHERE ELEMENTID = ?;");
+			ps.setInt(1, elementId);
+			ResultSet resultSet = ps.executeQuery();
+			
+			while (resultSet.next())
+			{
+				if (resultSet.getObject("FONTID") == null) 
+				{
+					element = generateImage(resultSet);
+				}
+				else {
+					element = generateTextbox(resultSet);
+				}
+			}
+			
+			resultSet.close();
+			ps.close();
+			
+			return element;
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			throw new Exception("Failed to retrieve textbox: " + e.getMessage());
 		}
 	}
 	

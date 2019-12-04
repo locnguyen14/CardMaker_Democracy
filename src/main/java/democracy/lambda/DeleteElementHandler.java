@@ -78,9 +78,9 @@ public class DeleteElementHandler implements RequestStreamHandler {
 		{
 			try 
 			{	
-				// Get the element
+				// Get the element. A different function to check whether the element deleted is image or textbox
 				ElementDAO dao = new ElementDAO();
-				VisualElement element = dao.getTextbox(elementId);
+				VisualElement element = dao.getVisualElement(elementId);
 				int cardId = element.getCardId();
 
 				// Delete the element
