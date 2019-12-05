@@ -103,41 +103,6 @@ public class DuplicateCardHandler implements RequestStreamHandler {
 		}
 		
 		
-//		String path;
-//		int cardID = -1;
-//		
-//		try 
-//		{
-//			BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-//			JSONParser parser = new JSONParser();
-//			JSONObject event = (JSONObject) parser.parse(reader);
-//			logger.log("event:" + event.toJSONString());
-//			
-//			path = (String) ((JSONObject) event.get("pathParameters")).get("cardId"); // always check the cloudwatch log
-//			logger.log("Path=" + path);
-//			cardID = Integer.parseInt(path);
-//			
-//			if (path == null) 
-//			{
-//				path = event.toJSONString();  // this is only here to make testing easier
-//			}	
-//		}
-//		catch(ParseException pe) 
-//		{
-//			logger.log(pe.toString());
-//			response = new RequestResponse(422, "Bad Request Parsing");  // unable to process input
-//			responseJson.put("body", new Gson().toJson(response));
-//			inputProcessingFailed = true;
-//			path = null;
-//		}
-//		catch(NumberFormatException ne) 
-//		{
-//			logger.log(ne.toString());
-//			response = new RequestResponse(422, "Bad Request Number Format");  // unable to process input
-//			responseJson.put("body", new Gson().toJson(response));
-//			inputProcessingFailed = true;
-//			path = null;
-//		}
 		
 		if (!inputProcessingFailed) {
 			DuplicateCardRequest req = new Gson().fromJson(body, DuplicateCardRequest.class);
@@ -173,7 +138,7 @@ public class DuplicateCardHandler implements RequestStreamHandler {
 			
 			catch (Exception e)
 			{
-				response = new RequestResponse(403, "Invalid card ID");
+				response = new RequestResponse(400, "unable to duplicate the card");
 			}
 		}
 		

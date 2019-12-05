@@ -8,9 +8,9 @@ public class NewImageRequest {
 	public String y;
 	public String width;
 	public String height;
-	public boolean isBase64;
+	public String image_name;
 	
-	public NewImageRequest(String cardId, String faceId, String image, String x, String y, String width, String height, boolean isBase64) {
+	public NewImageRequest(String cardId, String faceId, String image, String x, String y, String width, String height, String image_name) {
 		this.cardId = cardId;
 		this.faceId = faceId;
 		this.image = image;
@@ -18,6 +18,6 @@ public class NewImageRequest {
 		this.y = y;
 		this.width = width;
 		this.height = height;
-		this.isBase64 = isBase64;
+		this.image_name = image_name;
 	}
 }
