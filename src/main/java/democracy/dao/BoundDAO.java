@@ -109,4 +109,26 @@ public class BoundDAO {
 		
 	}
 
+	public boolean updateBound(Bounds bounds) throws Exception 
+	{
+		try 
+		{
+			PreparedStatement ps = conn.prepareStatement("UPDATE BOUNDS SET X = ?, Y = ?, WIDTH = ?, HEIGHT = ? WHERE BOUNDSID = ?;");
+			ps.setInt(1, bounds.getX());
+			ps.setInt(2, bounds.getY());
+			ps.setInt(3, bounds.getWidth());
+			ps.setInt(4, bounds.getHeight());
+			ps.setInt(5, bounds.getId());
+			
+			int numAffected = ps.executeUpdate();
+			ps.close();
+			
+			return (numAffected == 1 || numAffected == 0);
+		}
+		catch (Exception e) 
+		{
+			throw new Exception("Failed to update bounds: " + e.getMessage());
+		}
+	}
+
 }

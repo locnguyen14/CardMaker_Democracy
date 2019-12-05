@@ -249,5 +249,26 @@ public class ElementDAO {
 		}
 	}
 
+	public boolean updateElement(VisualElement textBox) throws Exception {
+		try 
+		{
+			PreparedStatement ps = conn.prepareStatement("UPDATE ELEMENTS SET BOUNDSID = ?, CONTENT = ?, FONTID = ? WHERE ELEMENTID = ?;");
+			ps.setInt(1, textBox.getBoundId());
+			ps.setString(2, textBox.getContent());
+			ps.setInt(3, textBox.getFontId());
+			ps.setInt(3, textBox.getId());
+			
+			int numAffected = ps.executeUpdate();
+			ps.close();
+			
+			return (numAffected == 1 || numAffected == 0);
+		}
+		catch (Exception e) 
+		{
+			throw new Exception("Failed to update bounds: " + e.getMessage());
+		}
+		
+	}
+
 
 }
