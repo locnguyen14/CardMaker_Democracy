@@ -12,14 +12,14 @@ import org.junit.Test;
 /**
  * A simple test harness for locally invoking your Lambda function handler.
  */
-public class NewImageHandlerTest {
+public class DuplicateCardHandlerTest {
 
     private static final String SAMPLE_INPUT_STRING = "{\"foo\": \"bar\"}";
     private static final String EXPECTED_OUTPUT_STRING = "{\"FOO\": \"BAR\"}";
 
     @Test
-    public void testNewImageHandler() throws IOException {
-        NewImageHandler handler = new NewImageHandler();
+    public void testDuplicateCardHandler() throws IOException {
+        DuplicateCardHandler handler = new DuplicateCardHandler();
 
         InputStream input = new ByteArrayInputStream(SAMPLE_INPUT_STRING.getBytes());;
         OutputStream output = new ByteArrayOutputStream();

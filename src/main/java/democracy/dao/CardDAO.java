@@ -58,8 +58,7 @@ public class CardDAO
 			
 			// Delete all the image
 			for (VisualElement image : images) 
-			{	
-				boundsIds.add(image.getBoundId());
+			{
 				if (dao.deleteVisualElement(image)) 
 				{
 					continue;
@@ -68,21 +67,11 @@ public class CardDAO
 			
 			// Delete all the text boxes
 			for (VisualElement textbox : textboxes) 
-			{	
-				if (textbox.getBoundId() != 8) {
-					boundsIds.add(textbox.getBoundId());
-				}
-				
+			{
 				if (dao.deleteVisualElement(textbox)) 
 				{
 					continue;
 				}
-			}
-			
-			//Delete the bounds;
-			BoundDAO bounddao = new BoundDAO();
-			for (int boundsId: boundsIds) {
-				bounddao.deleteBoundsbyId(boundsId);
 			}
 			
 			// Delete the card
