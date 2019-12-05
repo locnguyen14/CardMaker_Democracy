@@ -13,7 +13,6 @@ import com.amazonaws.util.json.Jackson;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import democracy.lambda.ListCardHandler;
-import democracy.lambda.S3Util;
 
 public class ListCardsHandlerTest extends LambdaTest 
 {
@@ -24,7 +23,7 @@ public class ListCardsHandlerTest extends LambdaTest
         InputStream input = new ByteArrayInputStream(incoming.getBytes());
         OutputStream output = new ByteArrayOutputStream();
 
-        handler.handleRequest(input, output, createContext("create"));
+        handler.handleRequest(input, output, createContext("List Cards"));
 
         JsonNode outputNode = Jackson.fromJsonString(output.toString(), JsonNode.class);
         Assert.assertEquals("200", outputNode.get("statusCode").asText());
