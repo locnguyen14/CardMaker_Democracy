@@ -100,7 +100,7 @@ public class EditTextBoxHandler implements RequestStreamHandler {
 				if (updateTextBox(cardId, elementId, text, fontId, x, y, width, height)) 
 				{
 					result = ResponseFieldGenerator.getVisualElementResponse(cardId);
-					response = new RequestResponse(422, "Unable to edit textbox");
+					response = new RequestResponse(200, result);
 				}
 				else 
 				{
