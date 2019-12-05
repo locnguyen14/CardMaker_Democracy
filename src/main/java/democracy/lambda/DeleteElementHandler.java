@@ -17,7 +17,6 @@ import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.google.gson.Gson;
 
 import democracy.dao.ElementDAO;
-import democracy.http.DeleteElementRequest;
 import democracy.http.RequestResponse;
 import democracy.http.ResponseFieldGenerator;
 import democracy.http.VisualElementResponse;

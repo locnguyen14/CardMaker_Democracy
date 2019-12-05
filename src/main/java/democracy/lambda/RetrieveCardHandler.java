@@ -59,15 +59,10 @@ public class RetrieveCardHandler implements RequestStreamHandler{
 			JSONParser parser = new JSONParser();
 			JSONObject event = (JSONObject) parser.parse(reader);
 			logger.log("event:" + event.toJSONString());
-			
+			System.out.println(event.toJSONString());
 			path = (String) ((JSONObject) event.get("pathParameters")).get("cardId"); // always check the cloudwatch log
 			logger.log("Path=" + path);
-			cardID = Integer.parseInt(path);
-			
-			if (path == null) 
-			{
-				path = event.toJSONString();  // this is only here to make testing easier
-			}	
+			cardID = Integer.parseInt(path);	
 		}
 		catch(ParseException pe) 
 		{

@@ -63,11 +63,7 @@ public class GenerateUrlHandler implements RequestStreamHandler {
 			path = (String) ((JSONObject) event.get("pathParameters")).get("cardId"); // always check the cloudwatch log
 			logger.log("Path=" + path);
 			cardID = Integer.parseInt(path);
-			
-			if (path == null) 
-			{
-				path = event.toJSONString();  // this is only here to make testing easier
-			}	
+	
 		}
 		catch(ParseException pe) 
 		{
