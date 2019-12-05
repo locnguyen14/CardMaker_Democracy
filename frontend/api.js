@@ -214,14 +214,35 @@ function handleCreateCardClick(e)
 	}
 }
 
-function handleDuplicateCardClick()
+function resetDuplicateCardForm()
+{
+	document.getElementById('duplicateCardModal').style.display = 'none';
+	document.getElementById("duplicateForm").reset();
+	imageBase64 = null;
+}
+
+function displayDuplicateCardForm()
 {
 	if (selectedCardId == null) { alert("Please select a card to duplicate."); return; }
+
+	document.getElementById('duplicateCardModal').style.display = 'block';
+}	
+
+
+function handleDuplicateCardClick()
+{
+	var recipientName = document.getElementById("duplicateRecipientName").value;
+	if (recipientName == "") { return; }
 	
+	data = {};
+	data["recipient"] = recipientName;
+	data["cardId"] = selectedCardId;
+	var js = JSON.stringify(data);
+	
+	// Send request
 	var xhr = new XMLHttpRequest();
-	var duplicateCardUrl = `${dupCardUrl}/${selectedCardId}`
-	xhr.open("GET", duplicateCardUrl, true);
-	xhr.send();
+	xhr.open("POST", dupCardUrl, true);
+	xhr.send(js);
 	console.log("API - DUPLICATE_CARD: Sent request.");
 	xhr.onloadend = function ()
 	{
@@ -229,15 +250,15 @@ function handleDuplicateCardClick()
 		{
 			console.log("API - DUPLICATE_CARD: Received response.");
 			console.log(xhr.responseText);
-		    var requestResponse = JSON.parse(xhr.responseText)["response"];
-		    if (requestResponse != null)
+		    
+			var requestResponse = parseRequestResponse(xhr.responseText);
+		    if (requestResponse[2] != null)
 		    {
-		    	updateCardList(requestResponse);
-		    	selectedCardId = null;
+		    	updateCardList(requestResponse[2])
 		    }
 		    else
 		    {
-		    	alert("Error no card existed anymore ");
+		    	alert(requestResponse[1]);
 		    }
 		}
 		else
@@ -246,6 +267,7 @@ function handleDuplicateCardClick()
 		}
 	}
 }
+
 
 function handleEditCardClick()
 {

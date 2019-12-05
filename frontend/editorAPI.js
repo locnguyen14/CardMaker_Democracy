@@ -122,6 +122,26 @@ function API_parseVisualElementResponse(response)
 		
 		faceIdToVisualElements[t.faceId].push(t);
 	}
+	
+	var images = response["images"];
+	for (var i = 0; i < images.length; i++)
+	{
+		var img = images[i];
+		var j = new Object();
+		j.id = img.id;
+		j.cardId = img.cardId;
+		j.faceId = img.faceId;
+		j.boundsId = img.boundId;
+		j.content = img.content;
+		
+		var bound = bounds[t.boundsId];
+		j.x = bound.x;
+		j.y = bound.y;
+		j.w = bound.width;
+		j.h = bound.height;
+		
+		faceIdToVisualElements[j.faceId].push(j);
+	}
 }
 
 function API_handleVisualElementResponse()
@@ -462,9 +482,7 @@ function readImageFile()
 	    reader.addEventListener("load", function(e) 
 	    {
 	    	// e.target.result is of the form "data:img/png;base64,STARTDATAHERE"
-	    	var idx = e.target.result.indexOf("base64,");
-	    	imageBase64 = e.target.result.substring(idx + 7);
-	    	console.log(imageBase64);
+	    	imageBase64 = e.target.result;
 	    }); 
 	    reader.readAsDataURL(fileUpload.files[0]);
     }
@@ -552,6 +570,10 @@ function handleAddVisualFormClick(event)
 		var data = {};
 		data["cardId"] = editorCardId.toString();
 		data["faceId"] = faceNumberToFaceId[currFaceIndex].toString();
+		data["x"] = x;
+		data["y"] = y;
+		data["width"] = w;
+		data["height"] = h;
 		
 		if (imageBase64 != null)
 		{
@@ -561,7 +583,7 @@ function handleAddVisualFormClick(event)
 				alert("Please provide a name for the image to upload.");
 				return;
 			}
-			data["imageName"] = newImageName;
+			data["image_name"] = newImageName;
 			data["image"] = imageBase64;
 		}
 		else 
@@ -569,15 +591,13 @@ function handleAddVisualFormClick(event)
 			// Get data["image"] as selection from select input
 			var imageChoice = document.getElementById("imageChoice");
 			data["image"] = imageChoice.options[imageChoice.selectedIndex].value;
-			data["imageName"] = "";
+			data["image_name"] = "";
 		}
 		
-		console.log(data);
-		return;
-		
 		var jsonString = JSON.stringify(data);
+
 		console.log(jsonString);
-	
+		
 		// Send request
 		var xhr = new XMLHttpRequest();
 		xhr.open("POST", addImageUrl, true);
@@ -587,7 +607,7 @@ function handleAddVisualFormClick(event)
 		{
 			if (xhr.readyState == XMLHttpRequest.DONE)
 			{
-
+				console.log(xhr.responseText);
 			}
 		}
 	}
