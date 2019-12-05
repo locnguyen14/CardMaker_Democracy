@@ -122,6 +122,26 @@ function API_parseVisualElementResponse(response)
 		
 		faceIdToVisualElements[t.faceId].push(t);
 	}
+	
+	var images = response["images"];
+	for (var i = 0; i < images.length; i++)
+	{
+		var img = images[i];
+		var j = new Object();
+		j.id = img.id;
+		j.cardId = img.cardId;
+		j.faceId = img.faceId;
+		j.boundsId = img.boundId;
+		j.content = img.content;
+		
+		var bound = bounds[t.boundsId];
+		j.x = bound.x;
+		j.y = bound.y;
+		j.w = bound.width;
+		j.h = bound.height;
+		
+		faceIdToVisualElements[j.faceId].push(j);
+	}
 }
 
 function API_handleVisualElementResponse()
@@ -185,12 +205,15 @@ function drawElement(faceId, elt)
 	
 	if (elt.fontId == undefined)
 	{
+		console.log(elt);
 		var img = new Image();
 		img.onload = function()
 		{
 			ctx.drawImage(img, elt.x, elt.y, elt.w, elt.h);
+			console.log("got here 2");
 		}
 		img.src = elt.content;
+		console.log("got here");
 	}
 	else
 	{
