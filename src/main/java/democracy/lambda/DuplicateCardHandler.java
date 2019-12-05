@@ -33,7 +33,15 @@ public class DuplicateCardHandler implements RequestStreamHandler {
 	LambdaLogger logger;
 	
 	boolean duplicateCard(int cardId, String recipient) throws Exception{
-		if(recipient.length()>0) {
+		boolean validcardId = false;
+		CardDAO cdao = new CardDAO();
+		for(Card c: cdao.getAllCards()) {
+			if (c.getId()==cardId) {
+				validcardId = true;
+				break;
+			}
+		}
+		if(recipient.length()>0 && validcardId) {
 		Card card = new CardDAO().getCard(cardId);
 		Card newcard = new Card(0, card.getEventId(), recipient, card.getLayoutId());
 		int new_cardId = new CardDAO().addCard(newcard);
