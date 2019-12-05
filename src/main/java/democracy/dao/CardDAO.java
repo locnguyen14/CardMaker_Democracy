@@ -54,6 +54,7 @@ public class CardDAO
 			ElementDAO dao = new ElementDAO();
 			List<VisualElement> images = dao.getAllImages(card.getId());
 			List<VisualElement> textboxes = dao.getAllTextboxes(card.getId());
+			List<Integer> boundsIds = new ArrayList<Integer>();
 			
 			// Delete all the image
 			for (VisualElement image : images) 
