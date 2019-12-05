@@ -37,7 +37,7 @@
 			
 		<div class="sideDiv">
 			<button onclick="document.getElementById('create').style.display='block'" style="width:80%">Create Card</button>
-			<button onclick="handleDuplicateCardClick()" style="width:80%">Duplicate Card</button>
+			<button onclick="displayDuplicateCardForm()" style="width:80%">Duplicate Card</button>
 			<button onclick="handleDeleteCardClick()" style="width:80%">Delete Card</button>
 			<button onclick="handleEditCardClick()" style="width:80%">Edit Card</button>
 			<button onclick="handleGenerateCardURLClick()" style="width:80%">Generate URL</button>
@@ -83,6 +83,20 @@
 			</div>
 		</div>
 		</div>
+	</div>
+	
+	<!-- POP UP FOR DUPLICATE CARD -->
+	<div id="duplicateCardModal" class="modal">
+		<form id = "duplicateForm" class="modal-content animate">
+		<div id="duplicateCardContainer" class="container">
+			<label><b>Recipient: </b></label>
+			<input id="duplicateRecipientName" type="text" placeholder="Enter recipient name." required>
+		</div>
+		<div class="clearfix">
+        <button type="button" onclick="JavaScript:resetDuplicateCardForm()" class="cancelbtn">Cancel</button>
+        <button type="submit" onclick="JavaScript:handleDuplicateCardClick()" class="signupbtn">Create</button>
+      </div>
+		</form>
 	</div>
 	
 	</body>

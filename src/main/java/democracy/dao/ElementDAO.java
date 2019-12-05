@@ -256,7 +256,7 @@ public class ElementDAO {
 			ps.setInt(1, textBox.getBoundId());
 			ps.setString(2, textBox.getContent());
 			ps.setInt(3, textBox.getFontId());
-			ps.setInt(3, textBox.getId());
+			ps.setInt(4, textBox.getId());
 			
 			int numAffected = ps.executeUpdate();
 			ps.close();

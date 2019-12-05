@@ -32,6 +32,7 @@ import democracy.model.Face;
 import democracy.model.Font;
 import democracy.model.Layout;
 import democracy.model.VisualElement;
+import software.amazon.ion.SystemSymbols;
 
 public class EditTextBoxHandler implements RequestStreamHandler {
 
@@ -95,10 +96,11 @@ public class EditTextBoxHandler implements RequestStreamHandler {
 				int width = Integer.parseInt(req.width);
 				int height = Integer.parseInt(req.height);
 				
+				
 				if (updateTextBox(cardId, elementId, text, fontId, x, y, width, height)) 
 				{
 					result = ResponseFieldGenerator.getVisualElementResponse(cardId);
-					response = new RequestResponse(422, "Unable to edit textbox");
+					response = new RequestResponse(200, result);
 				}
 				else 
 				{
@@ -124,7 +126,7 @@ public class EditTextBoxHandler implements RequestStreamHandler {
 	// main logic to judge whether to update an element
 	boolean updateTextBox(int cardId, int elementId, String text, int fontId, int x, int y, int width, int height) throws Exception
 	{
-		if (logger != null) { logger.log("in addTextBox");}
+		if (logger != null) { logger.log("in editTextBox");}
 		
 		ElementDAO dao = new ElementDAO();
 		VisualElement element = dao.getVisualElement(elementId);
@@ -165,6 +167,8 @@ public class EditTextBoxHandler implements RequestStreamHandler {
 		Bounds oldBound = bdao.getBounds(element.getBoundId());
 		Bounds newBound = new Bounds(element.getBoundId(), x, y, width, height);
 		boolean updatedBound = bdao.updateBound(newBound);
+		
+		System.out.println("Successafully update bounds");
 
 		boolean validFontId = false;
 		FontDAO fontdao = new FontDAO();
