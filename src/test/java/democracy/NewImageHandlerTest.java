@@ -55,7 +55,7 @@ public class NewImageHandlerTest extends LambdaTest
 	{
 		try 
 		{
-			NewImageRequest ntbr = new NewImageRequest("30", "2", "https://cs509-democracy.s3.amazonaws.com/test_images/site_test.png", "200", "200", "100", "100", false);
+			NewImageRequest ntbr = new NewImageRequest("30", "2", "https://cs509-democracy.s3.amazonaws.com/test_images/site_test.png", "200", "200", "100", "100", "");
 			String INPUT_STRING = new Gson().toJson(ntbr); 
 			testSuccessInput(INPUT_STRING);
 		}
@@ -101,7 +101,7 @@ public class NewImageHandlerTest extends LambdaTest
 	{
 		try 
 		{
-			NewImageRequest ntbr = new NewImageRequest("-1", "2", "https://cs509-democracy.s3.amazonaws.com/test_images/site_test.png", "0", "0", "100", "100", false);
+			NewImageRequest ntbr = new NewImageRequest("-1", "2", "https://cs509-democracy.s3.amazonaws.com/test_images/site_test.png", "0", "0", "100", "100", "");
 			String INPUT_STRING = new Gson().toJson(ntbr); 
 			testFailInput(INPUT_STRING, "422");
 		}

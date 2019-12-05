@@ -43,7 +43,7 @@ public class NewImageHandler implements RequestStreamHandler {
 	
 
 
-	boolean addImage(int cardId, int faceId, String image, int x, int y, int width, int height, boolean isBase64) throws Exception {
+	boolean addImage(int cardId, int faceId, String image, int x, int y, int width, int height, String image_name) throws Exception {
 		if (logger != null) { 
 			logger.log("in addImage"); 
 			}
@@ -69,7 +69,7 @@ public class NewImageHandler implements RequestStreamHandler {
 		}
 		if (validcardId && validfaceId && boundId > 0) {
 			ElementDAO dao = new ElementDAO();
-			if (isBase64 == true) {
+			if (image_name.length()>0) {
 				byte[] bI = java.util.Base64.getDecoder().decode(image.substring(image.indexOf(",")+1));
 				InputStream fis = new ByteArrayInputStream(bI);
 				AmazonS3 s3 = AmazonS3ClientBuilder.standard().withRegion(Regions.US_EAST_1).build();
@@ -78,10 +78,10 @@ public class NewImageHandler implements RequestStreamHandler {
 				metadata.setContentType(image.substring(image.indexOf(":")+1, image.indexOf(";")));
 				metadata.setCacheControl("public, max-age=31536000");
 				try {
-					String filename = UUID.randomUUID().toString();
-					s3.putObject("cs509-democracy", filename, fis, metadata);
-					s3.setObjectAcl("cs509-democracy", filename, CannedAccessControlList.PublicRead);
-					String url = s3.getUrl("cs509-democracy", filename).toString();
+//					String filename = UUID.randomUUID().toString();
+					s3.putObject("cs509-democracy", image_name, fis, metadata);
+					s3.setObjectAcl("cs509-democracy", image_name, CannedAccessControlList.PublicRead);
+					String url = s3.getUrl("cs509-democracy", image_name).toString();
 					VisualElement Image = new VisualElement(0, cardId, faceId, boundId, url);
 					return dao.addImage(Image);
 					
@@ -157,9 +157,10 @@ public class NewImageHandler implements RequestStreamHandler {
 				int y = Integer.parseInt(req.y);
 				int width = Integer.parseInt(req.width);
 				int height = Integer.parseInt(req.height);
-				boolean isBase64 = req.isBase64;
+//				boolean isBase64 = req.isBase64;
+				String image_name = req.image_name;
 				
-				if(addImage(cardId, faceId, image, x, y, width, height, isBase64)) {
+				if(addImage(cardId, faceId, image, x, y, width, height, image_name)) {
 					result = ResponseFieldGenerator.getVisualElementResponse(cardId);
 					response = new RequestResponse(200, result);
 				}

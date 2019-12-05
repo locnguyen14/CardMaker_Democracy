@@ -173,7 +173,7 @@ public class DuplicateCardHandler implements RequestStreamHandler {
 			
 			catch (Exception e)
 			{
-				response = new RequestResponse(403, "Invalid card ID");
+				response = new RequestResponse(400, "unable to duplicate the card");
 			}
 		}
 		
