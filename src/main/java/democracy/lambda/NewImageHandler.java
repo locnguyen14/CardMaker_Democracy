@@ -79,9 +79,10 @@ public class NewImageHandler implements RequestStreamHandler {
 				metadata.setCacheControl("public, max-age=31536000");
 				try {
 //					String filename = UUID.randomUUID().toString();
-					s3.putObject("cs509-democracy", image_name, fis, metadata);
-					s3.setObjectAcl("cs509-democracy", image_name, CannedAccessControlList.PublicRead);
-					String url = s3.getUrl("cs509-democracy", image_name).toString();
+					String path = "images/" + image_name;
+					s3.putObject("cs509-democracy", path, fis, metadata);
+					s3.setObjectAcl("cs509-democracy", path, CannedAccessControlList.PublicRead);
+					String url = s3.getUrl("cs509-democracy", path).toString();
 					VisualElement Image = new VisualElement(0, cardId, faceId, boundId, url);
 					return dao.addImage(Image);
 					
