@@ -11,44 +11,46 @@ import org.junit.Test;
 
 import com.amazonaws.util.json.Jackson;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.gson.Gson;
 
-import democracy.lambda.RetrieveCardHandler;
+import democracy.http.NewImageRequest;
+import democracy.lambda.DeleteCardHandler;
 
-public class RetrieveCardHandlerTest extends LambdaTest 
+public class DeleteCardHandlerTest extends LambdaTest
 {
 	void testSuccessInput(String incoming) throws IOException
 	{
-		RetrieveCardHandler handler = new RetrieveCardHandler();
+		DeleteCardHandler handler = new DeleteCardHandler();
 
         InputStream input = new ByteArrayInputStream(incoming.getBytes());
         OutputStream output = new ByteArrayOutputStream();
 
-        handler.handleRequest(input, output, createContext("Retrieve Card"));
+        handler.handleRequest(input, output, createContext("Delete Card"));
 
         JsonNode outputNode = Jackson.fromJsonString(output.toString(), JsonNode.class);
+        
         Assert.assertEquals("200", outputNode.get("statusCode").asText());
     }
-	
+
 	void testFailInput(String incoming, String statusCode) throws IOException
 	{
-		RetrieveCardHandler handler = new RetrieveCardHandler();
+		DeleteCardHandler handler = new DeleteCardHandler();
 		
         InputStream input = new ByteArrayInputStream(incoming.getBytes());
         OutputStream output = new ByteArrayOutputStream();
 
-        handler.handleRequest(input, output, createContext("Retrieve Card"));
+        handler.handleRequest(input, output, createContext("Delete Card"));
 
         JsonNode outputNode = Jackson.fromJsonString(output.toString(), JsonNode.class);
         Assert.assertEquals(statusCode, outputNode.get("statusCode").asText());
 	}
 	
-	
 	@Test
-	public void testRetrieveCardBadJson()
+	public void testDeleteCard()
 	{
 		try 
 		{
-			testFailInput("aksfdas", "422");
+			testSuccessInput("{\"pathParameters\":{\"cardId\":\"31\"}}");
 		}
 		catch (IOException io)
 		{
@@ -57,38 +59,37 @@ public class RetrieveCardHandlerTest extends LambdaTest
 	}
 	
 	@Test
-	public void testRetrieveCardIdNaN()
+	public void testDeleteCardInvalidCardId()
+	{
+		try 
+		{
+			testFailInput("{\"pathParameters\":{\"cardId\":\"-1\"}}", "422");
+		}
+		catch (IOException io)
+		{
+			Assert.fail("Invalid: " + io.getMessage());
+		}
+	}
+	
+	@Test
+	public void testDeleteCardInvalidJson()
+	{
+		try 
+		{
+			testFailInput("{\"pathParameters\":{:\"{\"cardId\":\"-1\"}}", "422");
+		}
+		catch (IOException io)
+		{
+			Assert.fail("Invalid: " + io.getMessage());
+		}
+	}
+	
+	@Test
+	public void testDeleteCardCardIdNaN()
 	{
 		try 
 		{
 			testFailInput("{\"pathParameters\":{\"cardId\":\"NOTANUMBER\"}}", "422");
-		}
-		catch (IOException io)
-		{
-			Assert.fail("Invalid: " + io.getMessage());
-		}
-	}
-	
-	@Test
-	public void testRetrieveCardInvalidId()
-	{
-		try 
-		{
-			testFailInput("{\"pathParameters\":{\"cardId\":\"-1\"}}", "403");
-		}
-		catch (IOException io)
-		{
-			Assert.fail("Invalid: " + io.getMessage());
-		}
-	}
-	
-	
-	@Test
-	public void testRetrieveCardValidId()
-	{
-		try 
-		{
-			testSuccessInput("{\"pathParameters\":{\"cardId\":\"30\"}}");
 		}
 		catch (IOException io)
 		{

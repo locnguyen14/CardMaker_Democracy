@@ -29,6 +29,8 @@ public class CreateCardHandlerTest extends LambdaTest
 
         JsonNode outputNode = Jackson.fromJsonString(output.toString(), JsonNode.class);
         
+        System.out.println(outputNode.asText());
+        
         Assert.assertEquals("200", outputNode.get("statusCode").asText());
     }
 	
@@ -45,6 +47,7 @@ public class CreateCardHandlerTest extends LambdaTest
         Assert.assertEquals(statusCode, outputNode.get("statusCode").asText());
 	}
 	
+	
 	@Test
 	public void testCreateCard()
 	{
@@ -53,6 +56,52 @@ public class CreateCardHandlerTest extends LambdaTest
 			CreateCardRequest ccr = new CreateCardRequest("TestDummy", "13", "1");
 			String INPUT_STRING = new Gson().toJson(ccr); 
 			testSuccessInput(INPUT_STRING);
+		}
+		catch (IOException io)
+		{
+			Assert.fail("Invalid: " + io.getMessage());
+		}
+	}
+	
+	@Test
+	public void testCreateCardInvalidJson()
+	{
+		try
+		{
+			String INPUT_STRING = "{\"cardId\":asdf][3\"}";
+			testFailInput(INPUT_STRING, "442");
+		}
+		catch (IOException io)
+		{
+			Assert.fail("Invalid: " + io.getMessage());
+		}
+	}
+	
+	
+	@Test
+	public void testCreateCardInvalidLayoutId()
+	{
+		try 
+		{
+			CreateCardRequest ccr = new CreateCardRequest("TestDummy", "13", "-1");
+			String INPUT_STRING = new Gson().toJson(ccr); 
+			testFailInput(INPUT_STRING, "422");
+		}
+		catch (IOException io)
+		{
+			Assert.fail("Invalid: " + io.getMessage());
+		}
+	}
+	
+
+	@Test
+	public void testCreateCardInvalidEventId()
+	{
+		try 
+		{
+			CreateCardRequest ccr = new CreateCardRequest("TestDummy", "-1", "1");
+			String INPUT_STRING = new Gson().toJson(ccr); 
+			testFailInput(INPUT_STRING, "422");
 		}
 		catch (IOException io)
 		{

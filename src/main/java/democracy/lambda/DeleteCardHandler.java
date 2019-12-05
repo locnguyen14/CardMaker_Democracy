@@ -64,10 +64,6 @@ public class DeleteCardHandler implements RequestStreamHandler {
 			logger.log("Path=" + path);
 			cardID = Integer.parseInt(path);
 			
-			if (path == null) 
-			{
-				path = event.toJSONString();  // this is only here to make testing easier
-			}	
 		}
 		catch(ParseException pe) 
 		{
