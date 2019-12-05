@@ -205,15 +205,12 @@ function drawElement(faceId, elt)
 	
 	if (elt.fontId == undefined)
 	{
-		console.log(elt);
 		var img = new Image();
 		img.onload = function()
 		{
 			ctx.drawImage(img, elt.x, elt.y, elt.w, elt.h);
-			console.log("got here 2");
 		}
 		img.src = elt.content;
-		console.log("got here");
 	}
 	else
 	{
