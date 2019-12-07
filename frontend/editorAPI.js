@@ -5,6 +5,8 @@ var retrieveCardUrl 	= apiBaseUrl + "main/retrieve";
 var retrieveImagesUrl 	= apiBaseUrl + "editor/list/images";
 var addTextBoxUrl		= apiBaseUrl + "editor/newtextbox";
 var addImageUrl			= apiBaseUrl + "editor/newimage";
+var editTextBoxUrl		= apiBaseUrl + "editor/editextbox";
+var editImageUrl		= apiBaseUrl + "editor/editimage"
 var deleteVisualUrl		= apiBaseUrl + "editor/delete";
 
 var layoutId = null;
@@ -208,7 +210,6 @@ function drawElement(faceId, elt)
 		var img = new Image();
 		img.onload = function()
 		{
-			console.log(elt.x + ", " + elt.y + ", " + elt.w + ", " + elt.h);
 			ctx.drawImage(img, elt.x, elt.y, elt.w, elt.h);
 		}
 		img.src = elt.content;
@@ -381,8 +382,6 @@ function displayEditVisualForm()
 		alert("Front-end is not synchronized with database."); return;
 	}
 	
-	console.log(selectedElement);
-	
 	// If the selected element is a textbox, fill and present the Edit Textbox form
 	if (selectedElement.hasOwnProperty('fontId'))
 	{
@@ -410,7 +409,56 @@ function displayEditVisualForm()
 
 function handleEditImageFormClick(event)
 {
-	console.log("handleEditImageFormClick");
+	var x = document.getElementById("boundsXEditImage").value;
+	var y = document.getElementById("boundsYEditImage").value;
+	var w = document.getElementById("boundsWEditImage").value;
+	var h = document.getElementById("boundsHEditImage").value;
+	
+	if (x == "" || y == "" || w == "" || h == "")
+	{
+		return;
+	}
+	
+	data = {}
+	data["cardId"] = editorCardId;
+	data["elementId"] = selectedVisualId;
+	data["x"] = x;
+	data["y"] = y;
+	data["width"] = w;
+	data["height"] = h;
+	
+	var jsonString = JSON.stringify(data);
+	
+	// Send request
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", editImageUrl, true);
+	xhr.send(jsonString);
+	console.log("API - EDIT IMAGE: Sent request");
+	xhr.onloadend = function ()
+	{
+		if (xhr.readyState == XMLHttpRequest.DONE)
+		{
+			console.log("API - EDIT IMAGE: Received response");
+			var requestResponse = parseRequestResponse(xhr.responseText);
+			
+			if (requestResponse[0] == 200)
+			{
+				API_parseVisualElementResponse(requestResponse[2]);
+				API_handleVisualElementResponse();
+				refreshCardFacePanel();
+				
+				resetEditImageForm();
+			}
+			else 
+			{
+				alert("ERROR: " + requestResponse[1]);
+			}
+		}
+		else
+		{
+			console.log("Error during xhr");
+		}
+	}
 }
 	
 function resetEditImageForm()
@@ -421,7 +469,65 @@ function resetEditImageForm()
 
 function handleEditTextBoxFormClick(event)
 {
-	console.log("handleEditTextBoxFormClick");
+	var x = document.getElementById("boundsXEditTextBox").value;
+	var y = document.getElementById("boundsYEditTextBox").value;
+	var w = document.getElementById("boundsWEditTextBox").value;
+	var h = document.getElementById("boundsHEditTextBox").value;
+	
+	if (x == "" || y == "" || w == "" || h == "")
+	{
+		return;
+	}
+	
+	var text = document.getElementById("textBoxTextEditTextBox").value;
+	if (text == "") { return; }
+		
+	var fontSelect = document.getElementById("fontChoiceEditTextBox");
+	var fontId = fontSelect.options[fontSelect.selectedIndex].value;
+	
+	data = {}
+	data["cardId"] = editorCardId;
+	data["elementId"] = selectedVisualId;
+	data["text"] = text;
+	data["fontId"] = fontId;
+	data["x"] = x;
+	data["y"] = y;
+	data["width"] = w;
+	data["height"] = h;
+	
+	var jsonString = JSON.stringify(data);
+	
+	// Send request
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", editTextBoxUrl, true);
+	xhr.send(jsonString);
+	console.log("API - EDIT TEXTBOX: Sent request");
+	xhr.onloadend = function ()
+	{
+		if (xhr.readyState == XMLHttpRequest.DONE)
+		{
+			console.log("API - EDIT TEXTBOX: Received response");
+			console.log(xhr.responseText);
+			var requestResponse = parseRequestResponse(xhr.responseText);
+			
+			if (requestResponse[0] == 200)
+			{
+				API_parseVisualElementResponse(requestResponse[2]);
+				API_handleVisualElementResponse();
+				refreshCardFacePanel();
+				
+				resetEditTextBoxForm();
+			}
+			else 
+			{
+				alert("ERROR: " + requestResponse[1]);
+			}
+		}
+		else
+		{
+			console.log("Error during xhr");
+		}
+	}
 }
 
 function resetEditTextBoxForm()
@@ -539,7 +645,6 @@ function handleAddVisualFormClick(event)
 		data["height"] = h;
 		
 		var jsonString = JSON.stringify(data);
-		console.log(jsonString);
 	
 		// Send request
 		var xhr = new XMLHttpRequest();
@@ -601,8 +706,6 @@ function handleAddVisualFormClick(event)
 		}
 		
 		var jsonString = JSON.stringify(data);
-
-		console.log(jsonString);
 		
 		// Send request
 		var xhr = new XMLHttpRequest();
@@ -619,11 +722,17 @@ function handleAddVisualFormClick(event)
 			    	API_parseVisualElementResponse(requestResponse[2]);
 					API_handleVisualElementResponse();
 					refreshCardFacePanel();
+					
+					hideAddVisualForm();
 			    }
 			    else
 			    {
 			    	alert(requestResponse[1]);
 			    }
+			}
+			else 
+			{
+				console.log("Error during xhr");
 			}
 		}
 	}
@@ -659,7 +768,6 @@ function processDeleteVisual(visualId)
 			
 			if (requestResponse["statusCode"] == 200)
 			{
-				console.log(requestResponse);
 				API_parseVisualElementResponse(requestResponse["response"]);
 				API_handleVisualElementResponse();
 				refreshCardFacePanel();
@@ -671,7 +779,7 @@ function processDeleteVisual(visualId)
 		}
 		else
 		{
-			alert("Error during xhr");
+			console.log("Error during xhr");
 		}
 	}
 }
