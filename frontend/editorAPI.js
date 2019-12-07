@@ -134,7 +134,7 @@ function API_parseVisualElementResponse(response)
 		j.boundsId = img.boundId;
 		j.content = img.content;
 		
-		var bound = bounds[t.boundsId];
+		var bound = bounds[j.boundsId];
 		j.x = bound.x;
 		j.y = bound.y;
 		j.w = bound.width;
@@ -208,6 +208,7 @@ function drawElement(faceId, elt)
 		var img = new Image();
 		img.onload = function()
 		{
+			console.log(elt.x + ", " + elt.y + ", " + elt.w + ", " + elt.h);
 			ctx.drawImage(img, elt.x, elt.y, elt.w, elt.h);
 		}
 		img.src = elt.content;
@@ -488,6 +489,12 @@ function readImageFile()
     }
 }
 
+function hideAddVisualForm()
+{
+	document.getElementById("addVisual").style.display = "none";
+	document.getElementById("addVisualForm").reset();
+}
+
 function handleAddVisualFormClick(event)
 {
 	// Validate that the fields are properly filled out
@@ -544,7 +551,6 @@ function handleAddVisualFormClick(event)
 			if (xhr.readyState == XMLHttpRequest.DONE)
 			{
 				console.log("API - CREATE TEXTBOX: Received response");
-			    console.log(xhr.responseText);
 			    var requestResponse = parseRequestResponse(xhr.responseText);
 			    if (requestResponse[0] == 200)
 			    {	
@@ -552,7 +558,7 @@ function handleAddVisualFormClick(event)
 					API_handleVisualElementResponse();
 					refreshCardFacePanel();
 					
-					resetAddVisualForm();
+					hideAddVisualForm();
 			    }
 			    else
 			    {
@@ -607,7 +613,17 @@ function handleAddVisualFormClick(event)
 		{
 			if (xhr.readyState == XMLHttpRequest.DONE)
 			{
-				console.log(xhr.responseText);
+				var requestResponse = parseRequestResponse(xhr.responseText);
+			    if (requestResponse[0] == 200)
+			    {
+			    	API_parseVisualElementResponse(requestResponse[2]);
+					API_handleVisualElementResponse();
+					refreshCardFacePanel();
+			    }
+			    else
+			    {
+			    	alert(requestResponse[1]);
+			    }
 			}
 		}
 	}
@@ -652,6 +668,10 @@ function processDeleteVisual(visualId)
 			{
 				alert(requestResponse["errorMessage"]);
 			}
+		}
+		else
+		{
+			alert("Error during xhr");
 		}
 	}
 }

@@ -31,41 +31,6 @@ import democracy.model.VisualElement;
 public class DuplicateCardHandler implements RequestStreamHandler {
 	
 	LambdaLogger logger;
-	
-	boolean duplicateCard(int cardId, String recipient) throws Exception{
-		boolean validcardId = false;
-		CardDAO cdao = new CardDAO();
-		for(Card c: cdao.getAllCards()) {
-			if (c.getId()==cardId) {
-				validcardId = true;
-				break;
-			}
-		}
-		if(recipient.length()>0 && validcardId) {
-		Card card = new CardDAO().getCard(cardId);
-		Card newcard = new Card(0, card.getEventId(), recipient, card.getLayoutId());
-		int new_cardId = new CardDAO().addCard(newcard);
-		List<VisualElement> images = new ElementDAO().getAllImages(cardId);
-		List<VisualElement> textboxes = new ElementDAO().getAllTextboxes(cardId);
-		BoundDAO bdao = new BoundDAO();
-		ElementDAO edao = new ElementDAO();
-		for(VisualElement image: images) {
-			Bounds bounds = bdao.getBounds(image.getBoundId());
-			int new_boundId = bdao.addBound(bounds);
-			VisualElement new_image = new VisualElement(0, new_cardId, image.getFaceId(), new_boundId, image.getContent());
-			edao.addImage(new_image);
-		}
-		
-		for(VisualElement textbox: textboxes) {
-			Bounds bounds = bdao.getBounds(textbox.getBoundId());
-			int new_boundId = bdao.addBound(bounds);
-			VisualElement new_textbox = new VisualElement(0, new_cardId, textbox.getFaceId(), new_boundId, textbox.getContent(), textbox.getFontId());
-			edao.addTextbox(new_textbox);
-		}
-		return true;
-		}
-		return false;
-	}
 
     @Override
 	public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException 
