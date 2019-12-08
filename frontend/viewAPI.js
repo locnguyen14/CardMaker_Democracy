@@ -108,6 +108,26 @@ function API_parseVisualElementResponse(response)
 		
 		faceIdToVisualElements[t.faceId].push(t);
 	}
+	
+	var images = response["images"];
+	for (var i = 0; i < images.length; i++)
+	{
+		var img = images[i];
+		var j = new Object();
+		j.id = img.id;
+		j.cardId = img.cardId;
+		j.faceId = img.faceId;
+		j.boundsId = img.boundId;
+		j.content = img.content;
+		
+		var bound = bounds[j.boundsId];
+		j.x = bound.x;
+		j.y = bound.y;
+		j.w = bound.width;
+		j.h = bound.height;
+		
+		faceIdToVisualElements[j.faceId].push(j);
+	}
 }
 
 function API_handleVisualElementResponse()
