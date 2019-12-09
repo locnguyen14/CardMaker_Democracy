@@ -200,7 +200,8 @@ function handleCreateCardClick(e)
 		    var requestResponse = parseRequestResponse(xhr.responseText);
 		    if (requestResponse[2] != null)
 		    {
-		    	updateCardList(requestResponse[2])
+		    	updateCardList(requestResponse[2]);
+		    	resetform01();
 		    }
 		    else
 		    {
